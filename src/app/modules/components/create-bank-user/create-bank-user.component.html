@@ -1,0 +1,111 @@
+<div class="flex flex-col flex-auto page" @slideInLeft [formGroup]="form">
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-2xl ">
+        <div class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color p-4 pl-6">
+            <mat-icon class="cursor-pointer highlight-text-color" (click)="goBack()" [svgIcon]="translationService.getDirection() =='ltr' ? 'mat_outline:arrow_back' : 'mat_outline:arrow_forward' ">
+            </mat-icon>
+
+            <span *ngIf="!id">{{'Create New User' | translate}}</span>
+            <span *ngIf="id">{{'Edit User' | translate}}</span>
+
+        </div>
+        <hr class="border-b m-0 border-color">
+        <div class="flex sm:flex-row flex-col p-4 gap-x-4">
+            <div class="flex flex-col gap-y-4 flex-auto items-center">
+                <div class="flex flex-col bg-card shadow p-4 w-full md:w-3/4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Basic Info' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color">
+                    <div class="flex flex-col">
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'First Name' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="first_name">
+                                    <mat-error *ngIf="form.get('first_name').hasError('required')">
+                                        {{'First Name is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- Won't fix -->
+                            <!-- Re-opened -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Last Name' | translate}}</mat-label>
+                                    <input matInput formControlName="last_name">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field [ngClass]="isEmailError() ? 'error-feild':''"
+                                        class="example-full-width">
+                                        <mat-label>{{'Email' | translate}}
+                                            <span class="required-field">*</span>
+                                        </mat-label>
+                                        <input formControlName="email" matInput>
+                                        <mat-error *ngIf="form.get('email').hasError('required')">
+                                            {{'Email address is required' | translate}}
+                                        </mat-error>
+                                        <mat-error *ngIf="form.get('email').hasError('email')">
+                                            {{'Please enter a valid email address' | translate}}
+                                        </mat-error>
+                                        <mat-spinner *ngIf="isLoadingEmail" [diameter]="20" matSuffix></mat-spinner>
+                                    </mat-form-field>
+                                    <small class="danger-text-color" style="position: relative;top: -14px;"
+                                        *ngIf="isEmailError()">
+                                        {{'Email is already exist,please re-enter another one' | translate}}
+                                    </small>
+                            </div>
+                            <!-- Needs triage -->
+                        </div>
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <!-- Won't fix -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Mobile' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input minlength="8" maxlength="8" matInput formControlName="contact_no">
+                                    <mat-error *ngIf="form.get('contact_no').hasError('required')">
+                                        {{'Mobile number is required' | translate}}
+                                    </mat-error>
+                                    <mat-error *ngIf="form.get('contact_no').hasError('minlength')">
+                                        {{'Mobile number should be 8 digit' | translate}}
+                                    </mat-error>
+                                    <mat-error *ngIf="form.get('contact_no').hasError('pattern')">
+                                        {{'Mobile number is not valid ' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- Re-opened -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>{{'Role' | translate}}
+                                            <span class="required-field">*</span>
+                                        </mat-label>
+                                        <mat-select formControlName="role_id">
+                                            <mat-option *ngFor="let role of roles" [value]="role?.id">{{translationService.getTranslatedName(role)}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="form.get('role_id').hasError('required')">
+                                            {{'Role is required' | translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <!-- Needs triage -->
+                        </div>
+                        <div class="flex flex-row flex-initial p-4 justify-end">
+                            <button class="mat-focus-indicator  rounded-lg min-h-0 h-9 fuse-mat-button-large primary-bg-color mat-flat-button mat-button-base" mat-flat-button (click)="save()">
+                                {{'Submit' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,338 @@
+@import "mixins";
+.page {
+    @include mobile() {
+        margin: 0.5rem !important;
+    }
+    @include desktop() {
+        margin: 1rem !important;
+    }
+}
+
+.table-height {
+    height: calc(100vh - 25vh) !important;
+}
+
+.required-field {
+    color: red !important;
+}
+
+.action-btn {
+    height: 30px !important;
+    min-height: 25px !important;
+    line-height: normal !important;
+    border-radius: 0 !important;
+}
+
+.action-btn-container {
+    border: 1px solid transparent;
+}
+
+tr.mat-row,
+tr.mat-footer-row {
+    height: 48px !important;
+}
+
+.border-b-2-color {
+    border-bottom: 2px solid #439ae0;
+}
+
+tr.mat-header-row {
+    height: 60px !important;
+}
+
+.label-color {
+    color: #424344 !important;
+}
+
+.border-color {
+    border-color: #3b90d4 !important;
+}
+
+.primary-bg-color {
+    color: white !important;
+    background-color: #005DA8 !important;
+}
+
+.secondary-bg-color {
+    color: white !important;
+    background-color: #00C7B6 !important;
+}
+
+.secondary-text-color {
+    color: #00C7B6 !important;
+}
+
+.danger-text-color {
+    color: #dc2c2b !important;
+}
+
+.disabled-bg-color{
+    background-color: #e6e3e394 !important ;
+    color: white !important;
+}
+
+
+
+.disabled-border-color{
+    border: 2px solid red !important
+}
+
+.tertiary-bg-color {
+    color: white !important;
+    background-color: #848F96 !important;
+}
+
+.highlight-bg-color {
+    color: white !important;
+    background-color: #FFC138 !important;
+}
+
+.hight-light-color {
+    color: #FFC138 !important;
+}
+
+.selected-bg-color {
+    color: white !important;
+    background-color: #005DA8 !important;
+}
+
+.highlight-text-color {
+    color: #005DA8 !important
+}
+
+.sub-title-color {
+    color: #0099F5 !important;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.page-height {
+    height: 100vh !important;
+}
+
+.content {
+    background-color: white !important;
+}
+
+.action-btn-edit {
+    color: #3f51b5 !important;
+}
+
+.action-btn-delete {
+    color: #f44336 !important;
+}
+
+.action-btn-view {
+    color: #00C7B6 !important;
+}
+
+.action-change-password {
+    color: #828282 !important;
+}
+
+.action-send {
+    color: #92b2ec !important;
+}
+
+.success-text-color {
+    color: #2fdf75 !important;
+}
+
+.success {
+    background-color: #2fdf75 !important;
+    color: white
+}
+
+.error {
+    background-color: #ff4961 !important;
+    color: white
+}
+
+.warning {
+    background-color: #ff9800 !important;
+    color: white
+}
+
+.dropzone {
+    height: 100%;
+    min-width: auto;
+    display: table;
+    width: 100%;
+    background-color: #eeeeee40;
+    border: dotted 1px #aaa;
+}
+
+small {
+    color: #999 !important;
+}
+
+.mat-form-field {
+    font: 400 11px/1.125 Muli, Helvetica Neue, Arial, sans-serif;
+}
+
+.mat-simple-snackbar {
+    color: white !important;
+}
+
+.mat-simple-snackbar-action {
+    color: white !important;
+}
+
+.fuse-card {
+    box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%) !important;
+}
+
+.mat-progress-spinner circle,
+.mat-spinner circle {
+    stroke: #01579b !important;
+}
+
+.ace-tm .ace_print-margin {
+    display: none !important;
+}
+
+.ace_editor {
+    border: 1px solid #ccc !important;
+}
+
+.ngx-datatable.material .datatable-body {
+    cursor: pointer;
+}
+
+.attach-label {
+    background: #f3c036 !important;
+    color: white !important;
+    width: 183px !important;
+    height: 44px !important;
+    border-radius: 21.5px !important;
+    border: 1px solid #f3c036 !important;
+    padding: 10px 16px !important;
+    cursor: pointer !important;
+}
+
+.attach-label-file {
+    background: none !important;
+    color: black !important;
+}
+
+.box-shadow-none {
+    box-shadow: none !important;
+}
+
+.datatable-body-cell-label {
+    font-size: 12px !important;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+.help-text {
+    margin-left: 45px !important;
+}
+
+.mat-ripple.mat-tab-label[aria-selected="true"] {
+    opacity: 1 !important;
+    .mat-tab-label-content {
+        min-width: 120px !important;
+        padding: 6px;
+        background-color: #f3c036;
+        border-radius: 32px;
+        color: white;
+    }
+}
+
+mat-ink-bar {
+    display: none !important;
+}
+
+.smartphone {
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+.badge {
+    color: white;
+    background-color: #62c8b7 !important;
+    display: flex;
+    align-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 7px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 20px;
+    transition: opacity .2s ease-in-out .1s;
+    margin-right: 8px;
+}
+
+.center {
+    @include mobile() {
+        padding: 5px !important;
+    }
+}
+
+.history-dialog-box {
+    mat-dialog-container {
+        border-radius: 0px !important;
+    }
+}
+
+.stoked-btn-custom {
+    box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 20%), 0px 0px 0px 0px rgb(0 0 0 / 14%), 0px 0px 0px 0px rgb(0 0 0 / 12%);
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    padding: 0 15px !important;
+    line-height: 34px !important;
+    border-radius: 4px !important;
+    height: 40px !important;
+}
+
+.text-bold {
+    font-weight: bold !important;
+}
+
+.mat-dialog-height-transition {
+    .mat-dialog-container {
+        overflow: hidden !important;
+    }
+    transform: translateY(-250%);
+    animation: slideRight 0.3s forwards 0.2s ease;
+}
+
+@keyframes slideRight {
+    0% {
+        transform: translateX(30%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+.fuse-alert-container {
+    justify-content: center !important;
+}
+
+.fuse-alert-message {
+    font-weight: bold;
+    color: #2e5ea8 !important;
+    font-size: 16px;
+}
+
+.action-header {
+    text-align: end !important;
+}
+
+.action-body {
+    justify-content: flex-end !important;
+}

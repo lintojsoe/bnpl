@@ -1,0 +1,27 @@
+<div class="flex flex-col flex-auto justify-start px-2 " [ngClass]="isDashboard ? 'pb-0' : 'pb-5'">
+    <div class="flex flex-row flex-auto  gap-2 justify-start ">
+        <div class="flex flex-row flex-initial">
+            <div class="flex flex-wrap items-center font-medium" *ngFor="let breadcrumb of breadcrumbs;let last =last">
+                <div>
+                    <a [ngClass]="!breadcrumb?.disabled ? 'cursor-pointer' : ''" (click)="handleClick(breadcrumb)" class="whitespace-nowrap text-primary-500">{{translationService.getTranslatedName(breadcrumb)}}</a>
+                </div>
+                <div class="flex items-center ml-1 whitespace-nowrap" *ngIf="!last">
+                    <mat-icon class="cursor-pointer highlight-text-color mt-1" (click)="goBack()" [svgIcon]="translationService.getDirection() =='ltr' ? 'heroicons_solid:chevron-right' : 'heroicons_solid:chevron-left' "></mat-icon>
+                </div>
+            </div>
+            <!-- <ul id="breadcrumb" class="flex flex-row flex-initial">
+                <li *ngFor="let breadcrumb of breadcrumbs;let last =last"><a
+                        [ngClass]="!breadcrumb?.disabled ? 'active-crumb' : 'disabled'"
+                        (click)="handleClick(breadcrumb)"><span class="icon icon-beaker">
+                        </span> {{translationService.getTranslatedName(breadcrumb)}}</a></li>
+            </ul> -->
+            <!-- <a [ngClass]="!breadcrumb?.disabled ? 'active-crumb' : 'font-bold'" (click)="handleClick(breadcrumb)"
+                class="secondary-text-color breadcrumb">
+                {{translationService.getTranslatedName(breadcrumb)}}</a> -->
+
+            <!-- <ng-container *ngIf="!last">
+                <mat-icon class="secondary-text-color" svgIcon="mat_outline:arrow_forward_ios"></mat-icon>
+            </ng-container> -->
+        </div>
+    </div>
+</div>

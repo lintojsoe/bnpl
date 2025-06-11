@@ -1,0 +1,32 @@
+<div class="flex flex-col flex-auto" [formGroup]="form">
+    <div class="flex flex-col" formArrayName="documents" *ngFor="let documentsFormGroup of form.get('documents')['controls'];let i = index" [formGroup]="documentsFormGroup">
+        <div class="text-md font-bold tracking-tight highlight-text-color py-2">
+            {{i+1}} ) {{documentsFormGroup.get('name').value}} <span *ngIf="documentsFormGroup.get('document').hasError('required')" class="required-field">*</span>
+        </div>
+        <div class="uploadfilecontainer"  *ngIf="!documentsFormGroup.get('document').value" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event,'')">
+            <input hidden type="file" #fileInput (change)="uploadFile($event.target.files,i)">
+        </div>
+        <div class="imagefilecontainer" *ngIf="documentsFormGroup.get('document').value && isImage(documentsFormGroup.get('type').value)">
+            <mat-icon class="close-icon cursor-pointer" (click)="deleteAttachment(i)" svgIcon="mat_outline:close">
+            </mat-icon>
+            <img [src]="documentsFormGroup.get('document').value">
+        </div>
+        <div>
+            <div class="files-list" *ngIf="documentsFormGroup.get('document').value && !isImage(documentsFormGroup.get('type').value)">
+                <div class="flex flex-row flex-initial gap-x-2 items-center">
+                    <mat-icon class="file-icon" svgIcon="mat_outline:file_present"></mat-icon>
+                    {{documentsFormGroup.get('file_name').value}} 
+                </div>
+                <div class="flex flex-row gap-1 flex-initial">
+                    <button *ngIf="documentsFormGroup.get('id').value" class="delete-file" (click)="viewAttachment(documentsFormGroup.get('document').value)">
+                        <mat-icon class="secondary-text-color" svgIcon="mat_outline:remove_red_eye"></mat-icon>
+                    </button>
+                    <button class="delete-file" (click)="deleteAttachment(i,documentsFormGroup.get('delete_url').value)">
+                        <mat-icon style="color: red;" svgIcon="mat_outline:delete"></mat-icon>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

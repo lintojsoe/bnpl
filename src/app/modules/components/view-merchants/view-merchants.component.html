@@ -1,0 +1,199 @@
+<div class="flex flex-col flex-auto min-w-0 page" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col shadow bg-card">
+        <div class="flex flex-col bg-card shadow p-4">
+            <div class="flex flex-row flex-auto justify-between items-center pb-2">
+                <div
+                    class="text-xl flex flex-row flex-initial gap-1 items-center font-bold tracking-tight highlight-text-color py-4 ">
+                    <mat-icon class="cursor-pointer highlight-text-color" (click)="goBack()"
+                        [svgIcon]="translationService.getDirection() =='ltr' ? 'mat_outline:arrow_back' : 'mat_outline:arrow_forward' ">
+                    </mat-icon>
+                    <span>
+                        {{'Basic Info' | translate}}
+                    </span>
+
+                </div>
+                <div class="flex flex-col md:flex-row  gap-3 justify-end items-center">
+                    <button *ngIf="authUserService.checkPermission(utilitiesService.Permission.UpdateMerchant)"
+                        (click)="edit()" class="inline-flex md:w-auto w-full gap-x-2 edit-btn secondary-bg-color"
+                        mat-stroked-button>
+                        <mat-icon class="text-white m-1" svgIcon="mat_outline:edit"></mat-icon>
+                        <span>{{'Edit' | translate}}</span>
+                    </button>
+                    <button *ngIf="authUserService.checkPermission(utilitiesService.Permission.ContractList)"
+                        (click)="viewContracts()" class="inline-flex gap-x-2 edit-btn secondary-bg-color"
+                        mat-stroked-button>
+                        <mat-icon class="text-white m-1" svgIcon="mat_outline:preview"></mat-icon>
+                        <span>{{'Contracts' | translate}}</span>
+                    </button>
+                </div>
+            </div>
+            <hr class="border-b m-0 border-color">
+            <div class="flex flex-col flex-auto">
+                <div class="flex flex-col sm:flex-row flex-auto gap-x-4 gap-y-4 pt-4">
+                    <div class="flex flex-col gap-y-3" *ngIf="merchantsDetails?.logo">
+                        <div class="p-3 border rounded min-h-30">
+                            <div class="flex items-center min-w-30 text-lg font-semibold">
+                                <div class="logofilecontainer">
+                                    <img style="width: 100px;height: auto !important;" [src]="merchantsDetails?.logo">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col flex-auto gap-4" style="height: fit-content !important;">
+                        <div class="text-2xl font-bold  leading-none flex flex-row gap-x-1 flex-auto items-center"
+                            *ngIf="merchantsDetails?.name">
+                            {{merchantsDetails?.name}}
+                        </div>
+                        <div class="text-xl  leading-none flex flex-row gap-x-1 flex-auto items-center"
+                            *ngIf="merchantsDetails?.contact_no">
+                            <mat-icon svgIcon="mat_outline:local_phone"></mat-icon>
+                            {{merchantsDetails?.contact_no}}
+                        </div>
+                        <div class="text-xl  leading-none flex flex-row gap-x-1 flex-auto items-center"
+                            *ngIf="merchantsDetails?.email">
+                            <mat-icon svgIcon="mat_outline:email"></mat-icon>
+                            {{merchantsDetails?.email}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col flex-auto p-4  gap-y-4">
+            <!-- <div class="flex flex-col flex-auto bg-card shadow p-4">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'VAT Registration' | translate}}
+                </div>
+                <hr class="border-b m-0 border-color">
+                <div class="flex flex-col flex-auto gap-y-12 py-4">
+                    <div class="flex-auto grid grid-cols-4 gap-6">
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'VAT Registration' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.vat_registration}}</div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Issued Date' | translate}}</div>
+                            <div class="text-lg  leading-none">
+                                {{merchantsDetails?.vat_issue_date | date: 'dd/MM/yyyy'}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="flex flex-col flex-auto bg-card shadow p-4">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'Trade License' | translate}}
+                </div>
+                <hr class="border-b m-0 border-color">
+                <div class="flex flex-col flex-auto gap-y-12 py-4">
+                    <div class="flex-auto grid grid-cols-4 gap-6">
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Trade License Number' | translate}}</div>
+                            <div class="text-lg  leading-none">
+                                {{merchantsDetails?.trade_license_number | date: 'dd/MM/yyyy'}}</div>
+                        </div>
+                        <!-- Re-opened -->
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Date of Issue' | translate}}</div>
+                            <div class="text-lg  leading-none">
+                                {{merchantsDetails?.license_issue_date | date: 'dd/MM/yyyy'}}</div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Expiry Date' | translate}}</div>
+                            <div class="text-lg  leading-none">
+                                {{merchantsDetails?.license_expiry_date | date: 'dd/MM/yyyy'}}</div>
+                        </div>
+                        <!-- <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Country of Issue' | translate}}
+                            </div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.license_issue_country?.name}}
+                            </div>
+                        </div> -->
+                    </div>
+
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto bg-card shadow p-4">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'Authorized Signatory' | translate}}
+                </div>
+                <hr class="border-b m-0 border-color">
+                <div class="flex flex-col flex-auto gap-y-4 py-4">
+                    <div class="flex-auto grid grid-cols-4 gap-6">
+                        <!-- Won't fix -->
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Identify ID' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.authorized_signatory_id}}</div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Expiry Date' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.id_expiry_date | date: 'dd/MM/yyyy'}}
+                            </div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Country Of Issue' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.id_issue_country?.name}}</div>
+                        </div>
+                        <!-- Re-opened -->
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1">
+                            <div class="text-md  leading-none label-color">{{'Full Name' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.id_name}}</div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1">
+                            <div class="text-md  leading-none label-color">{{'DOB' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.id_dob | date: 'dd/MM/yyyy' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto bg-card shadow p-4">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'Bank Details' | translate}}
+                </div>
+                <hr class="border-b m-0 border-color">
+                <div class="flex flex-col flex-auto gap-y-4 py-4">
+                    <div class="flex-auto grid grid-cols-4 gap-6">
+                        <!-- Won't fix -->
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Bank Name' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.bank_name}}</div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'IBAN Number' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.iban_no}}</div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1 ">
+                            <div class="text-md  leading-none label-color">{{'Account Number' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.bank_account_no}}</div>
+                        </div>
+                        <!-- Re-opened -->
+                        <div class="col-span-2 sm:col-span-1 gap-y-1 flex flex-col px-1">
+                            <div class="text-md  leading-none label-color">{{'Account Name' | translate}}</div>
+                            <div class="text-lg  leading-none">{{merchantsDetails?.bank_account_name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto bg-card shadow p-4">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'Documents' | translate}}
+                </div>
+                <hr class="border-b m-0 border-color">
+                <div class="flex flex-col flex-auto gap-y-4 py-4">
+                    <div class="flex flex-col flex-auto p-4">
+                        <div class="flex-row flex flex-auto gap-6 flex-wrap" *ngIf="files?.length">
+                            <div class="flex flex-initial flex-col gap-1 items-center"
+                                *ngFor="let file of files;let i =index">
+                                <img (click)="viewAttchment(file?.document)" class="cursor-pointer"
+                                    style="height: 50px !important;width: 50px !important;"
+                                    src="../../../../assets/images/attach.png">
+                                <strong>{{'Attachment - ' | translate}}{{i+1}}</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

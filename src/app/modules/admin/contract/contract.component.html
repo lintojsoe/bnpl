@@ -1,0 +1,239 @@
+<div [formGroup]="form" class="flex flex-col flex-auto overflow-hidden page" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-2xl overflow-hidden mb-2">
+        <div
+            class="relative flex flex-col md:flex-row flex-0 md:items-center gap-1 md:justify-between py-2 px-2 md:px-4 border-b-2-color">
+            <div class="text-2xl flex-auto font-bold tracking-tight highlight-text-color">
+                {{'Contract List' | translate}}
+            </div>
+            <div *ngIf="merchantID && contracts?.length">
+                {{'Merchant' | translate}} : <strong
+                    class="highlight-text-color">{{contracts[0]?.account?.name}}</strong>
+            </div>
+            <div *ngIf="customerID && contracts?.length">
+                {{'Customer' | translate}} : <strong
+                    class="highlight-text-color">{{contracts[0]?.customer?.name}}</strong>
+            </div>
+            <div class="flex flex-row mt-2 md:mt-0 flex-initial gap-x-3" *ngIf="!isBank">
+                <button class="fuse-mat-button highlight-text-color status-btn"
+                    [ngClass]="isPaid == PaidStatus.All ? 'active-btn rounded-bl-xl rounded-br-xl' : '' "
+                    (click)="toggleStatus(PaidStatus.All)" mat-flat-button>
+                    {{'All' | translate}}
+                </button>
+                <button class="fuse-mat-button highlight-text-color pl-8 pr-8 status-btn"
+                    [ngClass]="isPaid ==PaidStatus.Paid ? 'active-btn rounded-bl-xl rounded-br-xl' : '' "
+                    (click)="toggleStatus(PaidStatus.Paid)" mat-flat-button>
+                    {{'Collected' | translate}}
+                </button>
+                <button class="fuse-mat-button highlight-text-color pl-8 pr-8 status-btn"
+                    [ngClass]="isPaid == PaidStatus.Unpaid ? 'active-btn rounded-bl-xl rounded-br-xl' : '' "
+                    (click)="toggleStatus(PaidStatus.Unpaid)" mat-flat-button>
+                    {{'Not Collected' | translate}}
+                </button>
+
+            </div>
+            <div class="flex flex-shrink-0 md:mt-0 mt-2 justify-end items-center flex-initial sm:mt-0 sm:ml-4">
+                <app-common-add-button
+                    *ngIf="authUSerService.checkPermission(utilitiesService.Permission.CreateContract)"
+                    (addBtnClick)="add()"></app-common-add-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-auto bg-card shadow rounded-t-sm overflow-hidden">
+        <div class="flex flex-auto overflow-hidden">
+            <div class="flex flex-col flex-initial overflow-hidden">
+                <div class="overflow-x-auto sm:overflow-y-auto "
+                    [ngClass]="contracts?.length ? 'table-height' : 'h-50' " cdkScrollable>
+                    <table class="w-full min-w-320 table-fixed bg-transparent" mat-table matSort
+                        [multiTemplateDataRows]="true" [dataSource]="contracts" [trackBy]="trackByFn">
+                        <ng-container matColumnDef="contract_no">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5 border-left-radius"
+                                mat-header-cell *matHeaderCellDef>
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Contract Number' | translate}}
+                                    </div>
+                                    <div>
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="reference">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let contract">
+                                {{contract?.reference}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Name -->
+                        <ng-container matColumnDef="customer_name">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Customer Name' | translate}}
+                                    </div>
+                                    <div>
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="name">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let contract">
+                                {{contract?.customer?.name}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="contact_no">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Mobile Number' | translate}}
+                                    </div>
+                                    <div>
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="contact_no">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let contract">
+                                {{contract?.customer?.contact_no}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="amount">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Amount' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                {{contract?.total}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="account">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Merchant' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                {{contract?.account?.name}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="contract_status">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Contract Status' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field appearance="outline" class="flex-auto gt-xs:pr-3 filter-box">
+                                            <mat-select formControlName="contract_status">
+                                                <mat-option value="">{{'All' | translate}} </mat-option>
+                                                <ng-container *ngFor="let status of contractEnum?.ContractStatuses">
+                                                    <mat-option *ngIf="isBank" [value]="status?.id">
+                                                        {{status?.name}}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="!isBank && status?.id != contractStatus.Settled"
+                                                        [value]="status?.id">
+                                                        {{status?.name}}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                <p *ngIf="isBank">
+                                    {{contract?.contract_status?.name}}
+                                </p>
+                                <p *ngIf="!isBank">
+                                    {{contract?.contract_status?.id != contractStatus.Settled ? contract?.contract_status?.name : 'Approved'}}
+                                </p>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="contract_date">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Contract Date' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                {{contract?.created | date:'dd/MM/yyyy'}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Active -->
+                        <ng-container matColumnDef="action">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5 border-right-radius"
+                                style="text-align: end !important;" mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Actions' | translate}}
+                            </th>
+                            <td class="pr-4 p-0 action-header" mat-cell *matCellDef="let contract">
+                                <div class="flex flex-row flex-auto overflow-hidden action-body">
+                                    <div class="flex flex-row action-btn-container" fxFlex="0 0 auto">
+                                        <button (click)="view(contract?.id)"
+                                            class="action-btn px-4 flex flex-row flex-auto items-center primary-bg-color"
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-l-md' : 'rounded-r-md'"
+                                            style="width: auto !important;" mat-icon-button fxLayoutGap="1em">
+                                            <mat-icon class="m-1 text-white" svgIcon="mat_outline:remove_red_eye">
+                                            </mat-icon>
+                                            <span class="text-white">{{'View' | translate}}</span>
+                                        </button>
+                                        <button class="action-btn secondary-bg-color " mat-icon-button
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-r-md' : 'rounded-l-md'"
+                                            [matMenuTriggerFor]="userActions">
+                                            <mat-icon svgIcon="mat_outline:keyboard_arrow_down" class="text-white">
+                                            </mat-icon>
+                                        </button>
+                                    </div>
+                                    <mat-menu [xPosition]="'before'" #userActions="matMenu">
+                                        <button
+                                            *ngIf="contract?.contract_status?.id=='1' && authUSerService.checkPermission(utilitiesService.Permission.UpdateContract)"
+                                            (click)="edit(contract?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                                                <strong>{{'Edit' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                        
+                                        <!-- <mat-divider class="my-2"></mat-divider>
+                                        <button *ngIf="contract?.contract_status?.id=='1'"
+                                            (click)="sendNotification(contract?.customer?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:notifications"></mat-icon>
+                                                <strong>{{'Send Reminder' | translate}}</strong>
+                                            </div>
+                                        </button> -->
+                                    </mat-menu>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr class="shadow" mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell border-b-0">{{'No data found' | translate}}</td>
+                        </tr>
+                        <tr class="h-18 hover:bg-hover" mat-row
+                            *matRowDef="let product; columns: getDisplayedColumns();">
+                        </tr>
+                    </table>
+                </div>
+
+                <mat-paginator *ngIf="contracts?.length"
+                    class="sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                    (page)="handlePageEvent($event)" [length]="page?.length" [pageSize]="page?.pageSize"
+                    [showFirstLastButtons]="true" [pageSizeOptions]="page?.pageSizeOptions"
+                    [pageIndex]="page?.pageIndex">
+                </mat-paginator>
+                <ng-template #noProducts>
+                    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+                        {{'Nothing to Display' | translate}}</div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

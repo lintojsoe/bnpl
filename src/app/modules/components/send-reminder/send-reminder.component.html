@@ -1,0 +1,33 @@
+<div class="flex flex-col flex-auto gap-4">
+    <div class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color">
+        <mat-icon class="highlight-text-color" svgIcon="mat_outline:notifications"></mat-icon>
+        <span>{{'Send Reminder' | translate}}</span>
+    </div>
+    <hr class="border-b m-0 border-color">
+    <form class="flex flex-col flex-auto gap-4" [formGroup]="form">
+        <div class="flex flex-col flex-auto gap-4">
+            <mat-form-field class="flex-auto">
+                <mat-label class="text-capitalized">
+                    {{'Subject'| translate}}
+                </mat-label>
+                <input formControlName="subject" matInput name="title">
+            </mat-form-field>
+            <div class="flex flex-col flex-auto gap-2">
+                <label>{{'Body' | translate}}</label>
+                <ckeditor formControlName="body" ngDefaultControl name="myckeditor1" [config]="ckeConfig">
+                </ckeditor>
+                <small style="margin-left: 0px !important;color: #f44336 !important;" *ngIf="form.get('body').hasError('required') ">
+                    {{'Body is required' | translate}}
+                </small>
+            </div>
+        </div>
+        <div class="flex flex-row flex-auto gap-2 justify-end items-center">
+            <button (click)="close()" mat-stroked-button color="warn">
+                <mat-icon class="save-cancel-btn" matPrefix>close</mat-icon> {{'Close' | translate}}
+            </button>
+            <button (click)="send()" type="submit" mat-flat-button class="primary-bg-color">
+                <mat-icon class="save-cancel-btn" matPrefix>send</mat-icon>{{'Send' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

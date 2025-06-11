@@ -1,0 +1,441 @@
+<div class="flex flex-col flex-auto page" @slideInLeft [formGroup]="form">
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-2xl ">
+        <div
+            class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color p-4 pl-6">
+            <mat-icon class="cursor-pointer highlight-text-color" (click)="goBack()"
+                [svgIcon]="translationService.getDirection() =='ltr' ? 'mat_outline:arrow_back' : 'mat_outline:arrow_forward' ">
+            </mat-icon>
+            <span *ngIf="!id">{{'Create New Merchant' | translate}}</span>
+            <span *ngIf="id">{{'Edit Merchant' | translate}}</span>
+
+        </div>
+        <hr class="border-b m-0 border-color">
+        <div class="flex sm:flex-row flex-col p-4 gap-4">
+            <div class="flex flex-col gap-y-4" style="flex: 0 0 70%;">
+                <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Basic Info' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color">
+                    <div class="flex flex-col flex-auto">
+                        <div class="flex flex-col sm:flex-row flex-auto gap-x-4 gap-y-4 pt-4">
+                            <div class="flex flex-col gap-y-3">
+                                <div class="flex-row flex-initial flex justify-between items-center">
+                                    <label class="upload-logo-label">{{'Upload Logo' | translate}}</label>
+                                    <mat-icon (click)="deleteLogo()" *ngIf="form.get('logo').value"
+                                        class="close-icon cursor-pointer" svgIcon="mat_outline:close">
+                                    </mat-icon>
+                                </div>
+                                <div class="p-3 border rounded min-h-30">
+                                    <div class="flex items-center min-w-30 text-lg font-semibold">
+                                        <div class="logofilecontainer" (click)="fileInput.click()" appDragDrop
+                                            (onFileDropped)="uploadFile($event)" *ngIf="!form.get('logo').value">
+                                            <input hidden type="file" #fileInput accept="image/png, image/jpeg"
+                                                (change)="uploadFile($event.target.files)">
+                                        </div>
+                                        <div class="flex-auto flex flex-row items-center justify-center"
+                                            *ngIf="form.get('logo').value">
+                                            <img style="width: 100px;height: auto !important;"
+                                                [src]="form.get('logo').value">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="flex-auto grid grid-cols-3 gap-4">
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>
+                                            {{'Comapany Name' | translate}}
+                                            <span class="required-field">*</span>
+                                        </mat-label>
+                                        <input matInput formControlName="name">
+                                        <mat-error *ngIf="form.get('name').hasError('required')">
+                                            {{'Name is required' | translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <!-- Won't fix -->
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                    <mat-form-field [ngClass]="isEmailError() ? 'error-feild':''"
+                                        class="example-full-width">
+                                        <mat-label>{{'Work Email' | translate}}
+                                            <span class="required-field">*</span>
+                                        </mat-label>
+                                        <input formControlName="email" matInput>
+                                        <mat-error *ngIf="form.get('email').hasError('required')">
+                                            {{'Email address is required' | translate}}
+                                        </mat-error>
+                                        <mat-error *ngIf="form.get('email').hasError('email')">
+                                            {{'Please enter a valid email address' | translate}}
+                                        </mat-error>
+                                        <mat-spinner *ngIf="isLoadingEmail" [diameter]="20" matSuffix></mat-spinner>
+                                    </mat-form-field>
+                                    <small class="danger-text-color" style="position: relative;top: -14px;"
+                                        *ngIf="isEmailError()">
+                                        {{'Email is already exist,please re-enter another one' | translate}}
+                                    </small>
+                                </div>
+                                <!-- Re-opened -->
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                    <mat-form-field [ngClass]="isErrorContact() ? 'error-feild':''"
+                                        class="example-full-width">
+                                        <mat-label>{{'Mobile' | translate}}
+                                            <span class="required-field">*</span>
+                                        </mat-label>
+                                        <input minlength="8" maxlength="8" matInput formControlName="contact_no">
+                                        <mat-error *ngIf="form.get('contact_no').hasError('required')">
+                                            {{'Mobile Number is required' | translate}}
+                                        </mat-error>
+
+                                        <mat-error *ngIf="form.get('contact_no').hasError('minlength')">
+                                            {{'Mobile number should be 8 digit' | translate}}
+                                        </mat-error>
+                                        <mat-error *ngIf="form.get('contact_no').hasError('pattern')">
+                                            {{'Mobile number is not valid ' | translate}}
+                                        </mat-error>
+                                        <mat-spinner *ngIf="isLoadingContact" [diameter]="20" matSuffix></mat-spinner>
+                                    </mat-form-field>
+                                    <small *ngIf="isErrorContact()" class="danger-text-color"
+                                        style="position: relative;top: -14px;">
+                                        {{'Mobile Number is already exist,please re-enter another one' | translate}}
+                                    </small>
+                                </div>
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>{{'Merchant Address' | translate}}</mat-label>
+                                        <input matInput formControlName="address">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>{{'City' | translate}}</mat-label>
+                                        <input matInput formControlName="city">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>{{'PO Box' | translate}}</mat-label>
+                                        <input matInput formControlName="pb_no">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                    <mat-form-field>
+                                        <mat-label>{{'Country' | translate}}
+                                            <span class="required-field">*</span>
+                                        </mat-label>
+                                        <mat-select formControlName="country_id" #singleSelect>
+                                            <mat-option>
+                                                <ngx-mat-select-search noEntriesFoundLabel="'No matching country found'"
+                                                    placeholderLabel="Search Country" [formControl]="countryControl">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+
+                                            <mat-option [value]="country"
+                                                *ngFor="let country of filteredCountry | async">
+                                                {{country?.name}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="form.get('country_id').hasError('required')">
+                                            {{'Country is required' | translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+
+                                </div>
+                                <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>{{'Business Category' | translate}}
+                                            <span class="required-field">*</span>
+                                        </mat-label>
+                                        <mat-select formControlName="business_category_id">
+                                            <mat-option [value]="cat?.id" *ngFor="let cat of businessCategory">
+                                                {{cat?.name}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="form.get('business_category_id').hasError('required')">
+                                            {{'Business category is required' | translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <!-- Needs triage -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'VAT Registration' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color">
+                    <div class="flex flex-col">
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'VAT Registration' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="vat_registration">
+                                    <mat-error *ngIf="form.get('vat_registration').hasError('required')">
+                                        {{'VAT Registration is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                <mat-form-field>
+                                    <mat-label>{{'Issue Date' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input formControlName="vat_issue_date" matInput [matDatepicker]="picker1">
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker1></mat-datepicker>
+                                    <mat-error *ngIf="form.get('vat_issue_date').hasError('required')">
+                                        {{'Issued Date is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Trade License' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color">
+                    <div class="flex flex-col grid">
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Trade License Number' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="trade_license_number">
+                                    <mat-error *ngIf="form.get('trade_license_number').hasError('required')">
+                                        {{'Trade License Number is required' | translate}}
+                                    </mat-error>
+                                    <mat-error *ngIf="form.get('trade_license_number').hasError('pattern')">
+                                        {{'Invalid character' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- Won't fix -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field>
+                                    <mat-label>{{'Date of Issue' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input [max]="today" formControlName="license_issue_date" matInput
+                                        [matDatepicker]="picker5">
+                                    <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker5></mat-datepicker>
+                                    <mat-error *ngIf="form.get('license_issue_date').hasError('required')">
+                                        {{'Date of Issue is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- Re-opened -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                <mat-form-field>
+                                    <mat-label>{{'Expiry Date' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input [min]="today" formControlName="license_expiry_date" matInput
+                                        [matDatepicker]="picker6">
+                                    <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker6></mat-datepicker>
+                                    <mat-error *ngIf="form.get('license_expiry_date').hasError('required')">
+                                        {{'Expiry Date is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- Needs triage -->
+                        </div>
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <!-- <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>{{'Country of issue' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <mat-select formControlName="license_issue_country_id">
+                                        <mat-option [value]="country?.id" *ngFor="let country of countryList">
+                                            {{country?.name}}</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="form.get('license_issue_country_id').hasError('required')">
+                                        {{'Country of issue is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div> -->
+                            <!-- Won't fix -->
+                            <!-- Re-opened -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Address Description' | translate}}</mat-label>
+                                    <input matInput>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Authorized Signatory' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color">
+                    <div class="flex flex-col">
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Identify ID' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="authorized_signatory_id">
+                                    <mat-error *ngIf="form.get('authorized_signatory_id').hasError('required')">
+                                        {{'Identify ID is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field>
+                                    <mat-label>{{'Expiry Date' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input [min]="today" formControlName="id_expiry_date" matInput
+                                        [matDatepicker]="picker4">
+                                    <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker4></mat-datepicker>
+                                    <mat-error *ngIf="form.get('id_expiry_date').hasError('required')">
+                                        {{'Expiry Date is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Full Name' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="id_name">
+                                    <mat-error *ngIf="form.get('id_name').hasError('required')">
+                                        {{'Full Name is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>{{'Country of issue' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <mat-select formControlName="id_issue_country_id">
+                                        <mat-option [value]="country?.id" *ngFor="let country of countryList">
+                                            {{country?.name}}</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="form.get('id_issue_country_id').hasError('required')">
+                                        {{'County of Issue is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div> -->
+                        </div>
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field>
+                                    <mat-label>{{'DOB' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input [max]="today" formControlName="id_dob" matInput [matDatepicker]="picker7">
+                                    <mat-datepicker-toggle matSuffix [for]="picker7"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker7></mat-datepicker>
+                                    <mat-error *ngIf="form.get('id_dob').hasError('required')">
+                                        {{'DOB is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Bank Details' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color">
+                    <div class="flex flex-col">
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Bank Name' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <mat-select formControlName="bank_id">
+                                        <mat-option [value]="bankName?.id" *ngFor="let bankName of bankNames">
+                                            {{bankName?.name}}</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="form.get('bank_id').hasError('required')">
+                                        {{'Bank Name is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width" [ngClass]="isIBANError() ? 'error-feild':''">
+                                    <mat-label>{{'IBAN Number' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="iban_no">
+                                    <mat-error *ngIf="form.get('iban_no').hasError('required')">
+                                        {{'IBAN Number is required' | translate}}
+                                    </mat-error>
+                                    <mat-spinner *ngIf="isLoadingIban" [diameter]="20" matSuffix></mat-spinner>
+                                    <mat-error *ngIf="form.get('iban_no').hasError('pattern')">
+                                        {{'Invalid IBAN Number' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                                <small class="danger-text-color" style="position: relative;top: -14px;"
+                                    *ngIf="isIBANError()">
+                                    {{'IBAN Number is already exist,please re-enter another one' | translate}}
+                                </small>
+                            </div>
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Bank Account Number' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="bank_account_no">
+                                    <mat-error *ngIf="form.get('bank_account_no').hasError('required')">
+                                        {{'Account Number is required' | translate}}
+                                    </mat-error>
+                                    <mat-error *ngIf="form.get('bank_account_no').hasError('pattern')">
+                                        {{'Account Number must be numbers' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Account Name' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="bank_account_name">
+                                    <mat-error *ngIf="form.get('bank_account_name').hasError('required')">
+                                        {{'Account Name is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto bg-card shadow p-4" *ngIf="afterViewInit">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'Documents' | translate}}
+                </div>
+                <div class="flex flex-col flex-auto gap-1">
+                    <app-documents [id]="id" [documents]="getDocument()" [type]="'account'"></app-documents>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-row flex-initial p-4 justify-end">
+            <button
+                class="mat-focus-indicator  rounded-lg min-h-0 h-9 fuse-mat-button-large primary-bg-color mat-flat-button mat-button-base"
+                mat-flat-button (click)="save()">
+                {{'Save' | translate}}
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="flex flex-col flex-auto  overflow-hidden page" @slideInLeft>
+
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-2xl overflow-hidden mb-2">
+        <div class="relative  flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-3 px-2 md:px-4 border-b-2-color">
+            <!-- Loader -->
+            <!-- Title -->
+            <div class="text-2xl font-bold tracking-tight highlight-text-color">{{'Reports' | translate}}
+            </div>
+            <!-- Actions -->
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-auto bg-card shadow rounded-t-sm overflow-hidden">
+        <div class="overflow-x-auto sm:overflow-y-auto" cdkScrollable>
+            <div class="flex flex-col flex-auto w-full">
+                <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full mt-8">
+                        <ng-container *ngFor="let report of reports">
+                            <!-- *ngIf="getPermission(report?.key)"  -->
+                            <div id="reports-block" *ngIf="getPermission(report?.key)" (click)="openReport(report)" class="flex flex-row gap-2 border-solid border border-gray-200 cursor-pointer flex-auto bg-card shadow rounded-2xl overflow-hidden p-10 items-center justify-center md:text-lg sm:text-sm">
+                                <mat-icon class="hover:text-white" svgIcon="mat_outline:event_note"></mat-icon>
+                               <strong>{{report?.name}}</strong> 
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

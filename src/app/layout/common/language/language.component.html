@@ -1,0 +1,8 @@
+<button *ngIf="currentLanguage=='en'" (click)="setLanguage('ar')" class="px-3 mr-1 inline-flex" mat-button>
+    <mat-icon class="icon-size-5 mr-2" svgIcon="mat_outline:language"></mat-icon>
+    <span>عربى</span>
+</button>
+<button *ngIf="currentLanguage=='ar'" (click)="setLanguage('en')" class="px-3 mr-1 inline-flex" mat-button>
+    <mat-icon class="icon-size-5 mr-2" svgIcon="mat_outline:language"></mat-icon>
+    <span>English</span>
+</button>

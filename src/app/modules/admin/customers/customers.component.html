@@ -1,0 +1,214 @@
+<div class="flex flex-col flex-auto overflow-hidden page" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-2xl overflow-hidden mb-2">
+        <div
+            class="relative flex flex-col md:flex-row flex-0 md:items-center md:justify-between py-2 px-2 md:px-4 border-b-2-color">
+            <div class="text-2xl flex-auto font-bold tracking-tight highlight-text-color">
+                {{'Customers List' | translate}}
+            </div>
+            <div class="flex md:flex-initial flex-auto md:flex-shrink-0 items-center sm:mt-0 sm:ml-4">
+                <!-- Search -->
+                <!-- <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-50">
+        <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        <input matInput [placeholder]="{{'Search customers' | translate}}"> -->
+                <!-- <input
+            matInput
+            [formControl]="searchInputControl"
+            [autocomplete]="'off'"
+            [placeholder]="'Search products'"> -->
+                <!-- </mat-form-field> -->
+                <div class="flex flex-auto md:flex-initial flex-row items-center justify-between md:justify-start">
+                    <app-download-button
+                        *ngIf="this.authUserService.checkPermission(this.utilitiesService.Permission.CustomerDownload)"
+                        [type]="utilitiesService.getDownloadTypes.Customer" [listLength]="customers.length"
+                        (openDownloadHandle)="openDownloads()" (downloadHandle)="download()"></app-download-button>
+                    <app-common-add-button
+                        *ngIf="authUserService.checkPermission(utilitiesService.Permission.CreateCustomer)"
+                        (addBtnClick)="addBtnClick()"></app-common-add-button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div [formGroup]="form" class="flex flex-col flex-auto bg-card shadow rounded-t-sm overflow-hidden">
+        <div class="flex flex-auto overflow-hidden">
+            <div class="flex flex-col flex-initial overflow-hidden">
+                <div class="overflow-x-auto sm:overflow-y-auto table-height" [ngClass]="customers?.length ? 'table-height' : 'h-50' "
+                    cdkScrollable>
+                    <table class="w-full min-w-320 table-fixed bg-transparent" mat-table matSort
+                        [multiTemplateDataRows]="true" [dataSource]="customers" [trackBy]="trackByFn">
+                        <ng-container matColumnDef="name">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Name' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input formControlName="name" matInput>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let customer">
+                                {{customer?.name}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="email">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5 w-1/4" mat-header-cell
+                                *matHeaderCellDef disableClear>
+
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Email' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input formControlName="email" matInput>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let customer">
+                                {{customer?.email}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="mobile">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Mobile' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input formControlName="contact_no" matInput>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let customer">
+                                {{customer?.contact_no}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="civil_id">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Civil ID' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input formControlName="civil_id" matInput>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let customer">
+                                {{customer?.civil_id}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="nationality">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Nationality' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let customer">
+                                {{customer?.nationality?.name}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="updated">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Updated Date' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let customer">
+                                {{customer?.updated | date: 'dd/MM/yyyy  '}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5 border-right-radius"
+                                style="text-align: end !important;" mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Actions' | translate}}
+                            </th>
+                            <td class="pr-4 action-header" mat-cell *matCellDef="let customer">
+                                <div class="flex flex-row flex-auto overflow-hidden action-body">
+                                    <div class="flex flex-row action-btn-container" fxFlex="0 0 auto">
+                                        <button (click)="view(customer?.id)"
+                                            class="action-btn px-4 flex flex-row flex-auto items-center primary-bg-color"
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-l-md' : 'rounded-r-md'"
+                                            style="width: auto !important;" mat-icon-button fxLayoutGap="1em">
+                                            <mat-icon class="m-1 text-white" svgIcon="mat_outline:remove_red_eye">
+                                            </mat-icon>
+                                            <span class="text-white">{{'View' | translate}}</span>
+                                        </button>
+                                        <button class="action-btn secondary-bg-color"
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-r-md' : 'rounded-l-md'"
+                                            mat-icon-button [matMenuTriggerFor]="userActions">
+                                            <mat-icon svgIcon="mat_outline:keyboard_arrow_down" class="text-white">
+                                            </mat-icon>
+                                        </button>
+                                    </div>
+                                    <mat-menu [xPosition]="'before'" #userActions="matMenu">
+                                        <button
+                                            *ngIf="authUserService.checkPermission(utilitiesService.Permission.UpdateCustomer)"
+                                            (click)="edit(customer?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                                                <strong>{{'Edit' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                        <mat-divider
+                                            *ngIf="authUserService.checkPermission(utilitiesService.Permission.SendNotification)"
+                                            class="my-2"></mat-divider>
+                                        <button
+                                            *ngIf="authUserService.checkPermission(utilitiesService.Permission.SendNotification)"
+                                            (click)="sendNotification(customer?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:notifications"></mat-icon>
+                                                <strong>{{'Send Reminder' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                    </mat-menu>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr class="shadow" mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell border-b-0">{{'No data found' | translate}}</td>
+                        </tr>
+                        <tr class="h-18 hover:bg-hover" mat-row *matRowDef="let customer; columns: columns;">
+                        </tr>
+                    </table>
+                </div>
+                <mat-paginator *ngIf="customers?.length"
+                    class="sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                    (page)="handlePageEvent($event)" [length]="page?.length" [pageSize]="page?.pageSize"
+                    [showFirstLastButtons]="true" [pageSizeOptions]="page?.pageSizeOptions"
+                    [pageIndex]="page?.pageIndex">
+                </mat-paginator>
+                <ng-template #noCustomer>
+                    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+                        {{'Nothing to Display' | translate}}</div>
+                </ng-template>
+
+            </div>
+            <!-- <div class="flex flex-col flex-auto overflow-hidden" *ngIf="!customers?.length">
+                <app-empty-items [@shake]="state"></app-empty-items>
+            </div> -->
+
+        </div>
+
+
+    </div>
+</div>

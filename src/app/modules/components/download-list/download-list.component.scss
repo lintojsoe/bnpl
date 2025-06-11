@@ -1,0 +1,78 @@
+:host {
+    width: 100% !important;
+    .box-shadow-none {
+        box-shadow: none !important;
+    }
+    .card-box-shadow {
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important
+    }
+    .status-badge {
+        color: white;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        padding: 1px 6px;
+        text-align: center;
+        min-width: 60px !important;
+        font-size: 10px !important;
+    }
+    .success {
+        background-color: #48dc48 !important
+    }
+    .pending {
+        background-color: #FFC138 !important;
+    }
+    .error {
+        background-color: #f13535 !important;
+    }
+    .cancelled {
+        background-color: #f13098 !important;
+    }
+    .initate {
+        background-color: #40877c !important;
+    }
+    .item {
+        width: 100%;
+        height: auto;
+        margin: 10px auto;
+        border: 1px solid #eaeaea;
+        padding: 10px;
+    }
+    .default {
+        background-color: #1d3f72 !important;
+    }
+    .download-btn {
+        min-height: 0 !important;
+        line-height: 0 !important;
+        height: 30px !important;
+    }
+    .cancel-btn {
+        min-height: 0 !important;
+        line-height: 0 !important;
+        height: 25px !important;
+    }
+    .btn-skeln {
+         ::ng-deep .loader.progress {
+            height: 35px !important;
+        }
+    }
+    .icons {
+        font-family: 'Material Icons' !important
+    }
+    .max-height-custom {
+        max-height: 70vh;
+        overflow: auto !important;
+    }
+    .time-skltn {
+         ::ng-deep .loader.progress {
+            height: 8px !important;
+        }
+    }
+    .download-time {
+        font-size: 9px !important;
+        color: #c5c8cc !important;
+    }
+    .retry-bg-color {
+        color: white !important;
+        background-color: #f13535 !important;
+    }
+}

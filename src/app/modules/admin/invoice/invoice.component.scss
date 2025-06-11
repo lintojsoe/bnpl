@@ -1,0 +1,22 @@
+:host {
+
+
+    th {
+        padding-top: 5px !important;
+    }
+
+    ::ng-deep .mat-form-field-flex {
+        min-height: 0 !important;
+        max-width: 150px !important;
+        height: 30px;
+    }
+
+    input {
+        color: black !important;
+    }
+
+    ::ng-deep .mat-select .mat-select-trigger {
+        bottom: 9px !important;
+    }
+
+}

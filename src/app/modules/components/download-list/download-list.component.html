@@ -1,0 +1,86 @@
+<div class="flex flex-auto flex-col items-stretch gap-2">
+    <div class="flex flex-row flex-auto justify-between items-center">
+        <div class="highlight-text-color mat-title mb-0">{{'All Downloads' | translate}}</div>
+        <mat-icon (click)="close()" svgIcon="mat_outline:close" class="cursor-pointer"></mat-icon>
+    </div>
+    <div class="flex flex-row flex-auto justify-between items-center">
+        <div class="flex flex-row flex-auto gap-1">
+            <span class="highlight-text-color">{{'Total Files :' | translate}}</span>
+            <strong class="highlight-text-color">{{count}}</strong>
+        </div>
+        <button (click)="refresh()" mat-stroked-button>
+            <mat-icon svgIcon="mat_outline:refresh"></mat-icon>
+            {{'Refresh' | translate}}
+        </button>
+    </div>
+
+    <div #conatiner infiniteScroll [infiniteScrollDistance]="'0.5'" [scrollWindow]="false" (scrolled)="loadMore()"
+        class="flex flex-col flex-auto items-stretch bg-card shadow p-2 max-height-custom gap-3"
+        *ngIf="downloads?.length && !isLoading">
+        <div class="flex flex-auto flex-col bg-card p-2 gap-4 shadow" *ngFor="let download of downloads;let i =index">
+            <app-progress-bar *ngIf="(download?.status==1 || download?.status==2 || download?.status==3) "
+                [progress]="download?.complete_percentage"></app-progress-bar>
+            <div class="flex flex-row flex-auto justify-between items-end">
+                <div class="flex flex-col flex-auto">
+                    <strong class="highlight-text-color">{{'Report -' | translate}} {{i+1}}</strong>
+                    <div>
+                        <span class="download-time">{{getTime(download?.started_at)}}</span>
+                    </div>
+                </div>
+                <div class="flex flex-row flex-auto justify-end items-end">
+                    <div class="flex flex-col flex-auto justify-end items-end gap-1">
+                        <strong class="status-badge initate"
+                            *ngIf="download?.status==downloadStatus.Initiated">{{'Initiated' | translate}}</strong>
+                        <strong class="status-badge highlight-bg-color"
+                            *ngIf="download?.status==downloadStatus.InQueue">{{'In queue' | translate}}</strong>
+                        <strong class="status-badge pending"
+                            *ngIf="download?.status==downloadStatus.Processing">{{'Processing' | translate}}</strong>
+                        <strong class="status-badge success"
+                            *ngIf="download?.status==downloadStatus.Processed">{{'Processed' | translate}}</strong>
+                        <strong class="status-badge error" *ngIf="download?.status==downloadStatus.Failed">{{'Failed' |
+                            translate}}</strong>
+                        <strong class="status-badge cancelled"
+                            *ngIf="download?.status==downloadStatus.Cancelled">{{'Cancelled' | translate}}</strong>
+                        <div>
+                            <button *ngIf="download?.status==4" (click)="downloadFn(download?.files)" mat-raised-button
+                                class="primary-bg-color download-btn">
+                                <mat-icon class="icons">file_download</mat-icon>
+                                {{'Download' | translate}}
+                            </button>
+                            <button (click)="cancel(download?.id)"
+                                *ngIf="download?.status==1 || download?.status==2 || download?.status==3"
+                                mat-raised-button class="retry-bg-color cancel-btn">
+                                {{'Cancel' | translate}}
+                            </button>
+                            <button (click)="retry(download?.id)" *ngIf="download?.status==5 || download?.status==6"
+                                mat-raised-button class="retry-bg-color cancel-btn">
+                                {{'Retry' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-auto items-stretch bg-card shadow p-2" *ngIf="isLoading">
+        <div class="flex flex-col flex-auto items-stretch bg-card shadow p-2 gap-4"
+            *ngFor="let loader of [1,2,3,4,5,6,7,8]">
+            <div class="flex-row flex-auto flex justify-between items-stretch">
+                <ngx-skeleton-loader style="width: 50%;" count="1"></ngx-skeleton-loader>
+                <ngx-skeleton-loader style="width: 20%;height: 8px;" count="1"></ngx-skeleton-loader>
+            </div>
+            <div class="flex-row flex-auto flex justify-between items-stretch">
+                <ngx-skeleton-loader class="time-skltn" style="width: 20%;" count="1"></ngx-skeleton-loader>
+                <ngx-skeleton-loader class="btn-skeln" style="width: 30%;" count="1"></ngx-skeleton-loader>
+            </div>
+
+        </div>
+    </div>
+
+    <div *ngIf="!downloads.length && !isLoading" class="flex flex-col flex-auto items-stretch bg-card shadow p-2">
+        <strong class="highlight-text-color">{{'Nothing to display' | translate}}</strong>
+    </div>
+</div>
+
+<!-- <ng-template #emptyBlock></ng-template> -->

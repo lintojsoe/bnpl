@@ -1,0 +1,233 @@
+<div class="flex flex-col flex-auto page" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-2xl ">
+        <div class="flex flex-row flex-initial items-center justify-between">
+            <div class="text-2xl flex flex-row flex-initial gap-2 items-center font-bold tracking-tight highlight-text-color p-4 pl-6">
+                <mat-icon class="cursor-pointer highlight-text-color" (click)="goBack()" [svgIcon]="translationService.getDirection() =='ltr' ? 'mat_outline:arrow_back' : 'mat_outline:arrow_forward' ">
+                </mat-icon>
+                <div class="flex flex-auto md:flex-row flex-col md:gap-1">
+                    <span>{{'View Contract' | translate}}</span>
+                    <!-- <span>#{{contractDetails?.reference}}</span> -->
+                </div>
+            </div>
+            <div class="text-2xl flex flex-row flex-initial gap-2 items-center font-bold tracking-tight highlight-text-color p-4 pl-6">
+                <div *ngIf="isBank" style="font-size: 12px;"><span style="color: #1e293b6e;">{{'Merchant : ' | translate}}</span>{{contractDetails?.account?.name}}</div>
+                <span *ngIf="contractDetails?.contract_status?.id ==contractEnum.Pending" class="text-md text-white  leading-none p-2 bg-yellow-300 border-width-1 rounded"> {{'Pending' | translate}}</span>
+                <span *ngIf="contractDetails?.contract_status?.id ==contractEnum.Approved" class="bg-green-500 text-md  text-white  leading-none p-2 border-width-1 rounded"> {{'Approved' | translate}}</span>
+                <span *ngIf="contractDetails?.contract_status?.id ==contractEnum.Rejected" class="bg-red-600 bg-opacity-90 text-md text-white   leading-none p-2 border-width-1 rounded"> {{'Rejected' | translate}}</span>
+                <span *ngIf="contractDetails?.contract_status?.id ==contractEnum.Settled && isBank" class="bg-indigo-600 text-md text-white   text-md  leading-none p-2 border-width-1 rounded"> {{'Settled' | translate}}</span>
+                <span *ngIf="contractDetails?.contract_status?.id ==contractEnum.Settled && !isBank" class="bg-green-500 text-md  text-white  leading-none p-2 border-width-1 rounded"> {{'Approved' | translate}}</span>
+                <mat-icon (click)="printPDF()" class="cursor-pointer"  svgIcon="mat_outline:print"></mat-icon>
+            </div>
+        </div>
+        <hr class="border-b m-0 border-color" [ngClass]="getStatusColor()">
+        <div class="flex sm:flex-row flex-col p-4 gap-4">
+            <div class="flex flex-col gap-y-4" style="flex: 0 0 70%;">
+                <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 flex flex-row justify-between items-center">
+                        <div>{{'Customer Details' | translate}}</div>
+                      
+                    </div>
+                    <hr class="border-b m-0 border-color" [ngClass]="getStatusColor()">
+                    <div class="flex flex-col">
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 gap-y-2">
+                                <div class="text-md  leading-none label-color">{{'Customer Name' | translate}}</div>
+                                <div class="text-2xl  leading-none">{{contractDetails?.customer?.name}}</div>
+                            </div>
+                            <!-- Won't fix -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 gap-y-2">
+                                <div class="text-md  leading-none label-color">{{'Civil ID' | translate}}</div>
+                                <div class="text-xl  leading-none">{{contractDetails?.customer?.civil_id}}</div>
+                            </div>
+
+                            <!-- Re-opened -->
+                            <!-- Needs triage -->
+                        </div>
+                        <div class="flex-auto grid grid-cols-3 gap-4 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 gap-y-4">
+                                <div class="text-lg  leading-none flex flex-row flex-auto items-center gap-2 ">
+                                    <mat-icon svgIcon="mat_outline:phone"></mat-icon>
+                                    <span>{{contractDetails?.customer?.contact_no}}</span>
+                                </div>
+                                <div class="text-lg  leading-none px-1 flex flex-row flex-auto items-center gap-2">
+                                    <mat-icon svgIcon="mat_outline:email"></mat-icon>
+                                    <span>{{contractDetails?.customer?.email}}</span>
+                                </div>
+                            </div>
+                            <!-- Won't fix -->
+                            <!-- Needs triage -->
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col bg-card shadow p-4" *ngIf="contractDetails?.contract_payments?.length">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Payment Plan' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color" [ngClass]="getStatusColor()">
+                    <div class="flex flex-col mt-4">
+                        <div class="flex-auto grid grid-cols-2 gap-4 mb-4">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 gap-y-2">
+                                <div class="text-xl  leading-none label-color">{{'Payments' | translate}} : {{contractDetails?.contract_payments?.length}}
+                                </div>
+                            </div>
+                            <!-- Won't fix -->
+                            <div class="col-span-3 sm:col-span-1 flex flex-row px-1 gap-16 justify-end">
+                                <div class="flex flex-col flex-initial  gap-y-2">
+                                    <div class="text-md  leading-none label-color">{{'Amount Paid' | translate}}</div>
+                                    <div class="text-xl  leading-none success-text-color">{{contractDetails?.amount_paid}} <span>KWD</span></div>
+                                </div>
+                                <div class="flex flex-col flex-initial  gap-y-2">
+                                    <div class="text-md  leading-none label-color">{{'Amount Pending' | translate}}
+                                    </div>
+                                    <div class="text-xl  leading-none danger-text-color">{{contractDetails?.amount_due}} <span>KWD</span></div>
+                                </div>
+                            </div>
+                            <!-- Re-opened -->
+                            <!-- Needs triage -->
+                        </div>
+                        <div class="overflow-x-auto sm:overflow-y-auto" cdkScrollable>
+                            <table class="w-full table-fixed bg-transparent" mat-table matSort [multiTemplateDataRows]="true" [dataSource]="paymentPlan" [trackBy]="trackByFn">
+                                <!-- Price -->
+                                <ng-container matColumnDef="amount">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Amount' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.amount}} <span>KWD</span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Stock -->
+                                <ng-container matColumnDef="due_date">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Due Date' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.due_date}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="payment_number">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Payment Number' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.payment_number ? contractItem?.payment_number : '---'}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="payment_status_id">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Payment Status' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        <p>{{getPaymentStatus(contractItem?.payment_status_id)}}</p>
+                                    </td>
+                                </ng-container>
+
+                                <tr class="shadow" mat-header-row *matHeaderRowDef="paymentTableColumns; sticky: true">
+                                </tr>
+                                <tr class="h-18 hover:bg-hover" mat-row *matRowDef="let product; columns: paymentTableColumns;">
+                                </tr>
+                                <!-- <tr class="h-0" mat-row *matRowDef="let row; columns: ['productDetails']"></tr> -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Items' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color" [ngClass]="getStatusColor()">
+                    <div class="flex flex-col mt-4">
+                        <div class="overflow-x-auto sm:overflow-y-auto" cdkScrollable>
+                            <table class="w-full table-fixed bg-transparent" mat-table matSort [multiTemplateDataRows]="true" [dataSource]="contractItems" [trackBy]="trackByFn">
+                                <ng-container matColumnDef="product_name">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Product Name' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.product_name}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Stock -->
+                                <ng-container matColumnDef="description">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Description' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.description}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="quantity">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Quantity' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.quantity}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="unit_price">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Unit Price' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.unit_price}} <span>KWD</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="total">
+                                    <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                        {{'Total' | translate}}
+                                    </th>
+                                    <td class="pr-8 truncate" mat-cell *matCellDef="let contractItem">
+                                        {{contractItem?.price}} <span>KWD</span>
+                                    </td>
+                                </ng-container>
+                                <tr class="shadow" mat-header-row *matHeaderRowDef="productsTableColumns; sticky: true">
+                                </tr>
+                                <tr class="h-18 hover:bg-hover" mat-row *matRowDef="let product; columns: productsTableColumns;">
+                                </tr>
+                                <!-- <tr class="h-0" mat-row *matRowDef="let row; columns: ['productDetails']"></tr> -->
+
+                            </table>
+                        </div>
+                        <div class="flex flex-col bg-card p-4 gap-y-2">
+                            <div class="flex-row flex flex-auto justify-between items-center">
+                                <div class="text-md  leading-none label-color">{{'Sub Total' | translate}}</div>
+                                <div class="text-xl  leading-none">{{contractDetails?.sub_total}} <span> KWD</span>
+                                </div>
+                            </div>
+                            <div class="flex-row flex flex-auto justify-between items-center">
+                                <div class="text-md  leading-none label-color">{{'Discount' | translate}}</div>
+                                <div class="text-xl  leading-none">{{contractDetails?.discount}} <span> KWD</span></div>
+                            </div>
+                            <div class="flex-row flex flex-auto justify-between items-center">
+                                <div class="text-xl  leading-none label-color">{{'Total' | translate}}</div>
+                                <div class="text-xl font-bold  leading-none">{{contractDetails?.total}} <span>
+                                        KWD</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto bg-card shadow p-4">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'Documents' | translate}}
+                </div>
+                <hr class="border-b m-0 border-color" [ngClass]="getStatusColor()">
+                <div class="flex flex-col flex-auto p-4">
+                    <div class="flex-row flex flex-auto gap-6 flex-wrap" *ngIf="files?.length">
+                        <div class="flex flex-initial flex-col gap-1 items-center" *ngFor="let file of files;let i =index">
+                            <img (click)="viewAttchment(file?.document)" class="cursor-pointer" style="height: 50px !important;width: 50px !important;" src="../../../../assets/images/attach.png">
+                            <strong>{{'Attachment - ' | translate}}{{i+1}}</strong>
+                        </div>
+                    </div>
+                    <div class="flex-row flex flex-auto gap-6 flex-wrap" *ngIf="!files?.length">
+                        <app-empty-items></app-empty-items>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

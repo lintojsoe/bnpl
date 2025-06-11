@@ -1,0 +1,11 @@
+:host {
+    width: 100% !important;
+
+
+    .error-feild {
+        ::ng-deep .mat-form-field-flex {
+            border-color: red !important;
+        }
+    }
+}
+

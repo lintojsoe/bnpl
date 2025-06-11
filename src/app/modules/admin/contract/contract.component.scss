@@ -1,0 +1,38 @@
+:host {
+    th {
+        padding-top: 5px !important;
+    }
+
+    
+
+    ::ng-deep .mat-form-field-flex {
+        min-height: 0 !important;
+        max-width: 150px !important;
+        height: 30px;
+    }
+
+    .filter-box {
+        ::ng-deep .mat-select .mat-select-trigger {
+            bottom: 9px !important;
+        }
+
+        ::ng-deep .mat-form-field-outline {
+            border-radius: 6px !important;
+            background: white !important;
+        }
+    }
+
+    input {
+        color: black !important;
+    }
+
+    .active-btn {
+        color: white !important;
+        background-color: #005DA8 !important;
+    }
+
+    .status-btn {
+        border-radius: 10px !important;
+        width: 100%;
+    }
+}

@@ -1,0 +1,22 @@
+<div class="flex flex-col flex-auto">
+    <div class="flex flex-row flex-auto overflow-hidden">
+        <div class="flex flex-row action-btn-container" fxFlex="0 0 auto">
+            <button (click)="openDownloads()" class="action-btn px-4 flex flex-row flex-auto items-center primary-bg-color" [ngClass]="translationService.getDirection()=='ltr'? 'rounded-l-md' : 'rounded-r-md'" style="width: auto !important;" mat-icon-button fxLayoutGap="1em">
+                <mat-icon class="text-white mx-1" svgIcon="mat_outline:download_for_offline"></mat-icon>
+                <span class="text-white">{{'My Downloads' | translate}}</span>
+            </button>
+            <button class="action-btn secondary-bg-color" [ngClass]="translationService.getDirection()=='ltr'? 'rounded-r-md' : 'rounded-l-md'" mat-icon-button [matMenuTriggerFor]="userActions">
+                <mat-icon svgIcon="mat_outline:keyboard_arrow_down" class="text-white">
+                </mat-icon>
+            </button>
+        </div>
+        <mat-menu [xPosition]="'before'" #userActions="matMenu">
+            <button [ngClass]="!listLength ? 'pointer-events-none cursor-not-allowed text-opacity-50' : ''" class="cursor-pointer" (click)="download()" mat-menu-item>
+                <div class="flex flex-row flex-initial gap-x-2 items-center">
+                    <mat-icon svgIcon="mat_outline:file_download"></mat-icon>
+                    <strong>{{'Download' | translate}}</strong>
+                </div>
+            </button>
+        </mat-menu>
+    </div>
+</div>

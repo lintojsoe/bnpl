@@ -1,0 +1,51 @@
+<!-- Navigation -->
+<fuse-vertical-navigation class="dark bg-white text-black print:hidden" [appearance]="'compact'" [mode]="isScreenSmall ? 'over' : 'side'" [name]="'mainNavigation'" [navigation]="data.navigation.compact" [opened]="!isScreenSmall" [position]="getDirection()=='ltr' ? 'left':'right'">
+    <!-- Navigation header hook -->
+    <ng-container fuseVerticalNavigationContentHeader>
+        <!-- Logo -->
+        <div class="flex items-center justify-center h-20">
+            <img (click)="goToHome()" class="w-20 cursor-pointer" src="../../../../../assets/images/logo/logo-kib.png" alt="Logo image">
+        </div>
+    </ng-container>
+</fuse-vertical-navigation>
+
+<!-- Wrapper -->
+<div class="flex flex-col flex-auto w-full min-w-0">
+
+    <!-- Header -->
+    <div class="relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
+        <!-- Navigation toggle button -->
+        <button mat-icon-button (click)="toggleNavigation('mainNavigation')">
+            <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+        </button>
+        <!-- Components -->
+        <div class="flex flex-row flex-initial items-center pl-2  space-x-2" [ngClass]="TranslationService.getDirection()=='ltr'? 'ml-auto' : 'mr-auto'">
+            <!-- <fuse-fullscreen></fuse-fullscreen> -->
+            <!-- <search [appearance]="'bar'"></search> -->
+            <!-- <shortcuts [shortcuts]="data.shortcuts"></shortcuts> -->
+            <!-- <messages [messages]="data.messages"></messages> -->
+            <img style="max-height: 3rem !important;" *ngIf="user?.account_logo" class="w-20" [src]="user?.account_logo">
+            <app-language [currentLanguage]="getLanguage()" (emitLanguage)="emitLanguage($event)"></app-language>
+            <!-- <notifications [notifications]="data.notifications"></notifications> -->
+            <div class="flex flex-initial flex-col gap-1">
+                <span class="text-xl font-bold ">{{user?.first_name}} {{user?.last_name}}</span>
+                <small class="-mt-2" *ngIf="user?.account">{{'Merchant' | translate}}</small>
+                <small class="-mt-2" *ngIf="!user?.account">{{'Bank' | translate}}</small>
+            </div>
+            <user-menu></user-menu>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex flex-col flex-auto">
+        <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
+             Otherwise, layout changes won't be registered and the view won't be updated! -->
+        <router-outlet *ngIf="true"></router-outlet>
+    </div>
+
+    <!-- Footer -->
+    <div class="relative flex flex-0 items-center justify-center w-full h-14 px-4 md:px-6 z-49 border-t bg-card dark:bg-transparent print:hidden">
+        <span class="font-medium text-secondary">Myfees &copy; {{currentYear}}</span>
+    </div>
+
+</div>

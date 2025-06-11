@@ -1,0 +1,26 @@
+<div class="flex flex-col flex-auto items-center justify-center gap-4">
+    <div style="color: red;font-size: 24px;">
+        {{heading}}
+    </div>
+    <div>
+        <span>{{content}} </span>
+    </div>
+    <div class="flex flex-row flex-auto gap-2">
+        <div>
+            <button style="border: 1px solid;"
+                class="mat-focus-indicator danger-text-color  rounded-lg min-h-0 h-9 fuse-mat-button-large mat-flat-button mat-button-base"
+                mat-flat-button (click)="no()">
+                <mat-icon class="save-cancel-btn danger-text-color" matPrefix>close</mat-icon>
+                {{'No' | translate}}
+            </button>
+        </div>
+        <div>
+            <button
+                class="mat-focus-indicator  rounded-lg min-h-0 h-9 fuse-mat-button-large primary-bg-color mat-flat-button mat-button-base"
+                mat-flat-button (click)="yes()">
+                <mat-icon class="save-cancel-btn" matPrefix>check</mat-icon>
+                {{'Yes' | translate}}
+            </button>
+        </div>
+    </div>
+</div>

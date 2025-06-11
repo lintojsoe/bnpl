@@ -1,0 +1,154 @@
+<div class="flex flex-col flex-auto gap-4 cursor-pointer">
+    <div class="flex flex-col md:flex-row flex-auto gap-2 cursor-pointer">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+            <div (click)="gotoView(getUrl.Contract,contractStatus.Pending)" class="sm:col-span-1 flex flex-col  bg-color flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">
+                        {{'Pending Contracts' | translate}}
+                    </div>
+                </div>
+                <div class="flex items-center justify-center mt-1">
+                    <div class="flex flex-col">
+                        <div class="text-5xl font-semibold tracking-tight leading-tight total-merchants-color ">
+                            {{dashboard?.pending}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="gotoView(getUrl.Contract,contractStatus.Approved)" class="sm:col-span-1 flex flex-col  bg-color flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">
+                        {{'Approved Contracts' | translate}}
+                    </div>
+                </div>
+                <div class="flex items-center justify-center mt-1">
+                    <div class="flex flex-col">
+                        <div class="text-5xl font-semibold tracking-tight leading-tight total-contracts">
+                            {{dashboard?.approved + dashboard?.settled}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="gotoView(getUrl.Contract,contractStatus.Rejected)" class="sm:col-span-1 flex flex-col  bg-color flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">
+                        {{'Rejected Contracts' | translate}}
+                    </div>
+                </div>
+                <div class="flex items-center justify-center mt-1">
+                    <div class="flex flex-col">
+                        <div class="text-5xl font-semibold tracking-tight leading-tight  text-pink-600">
+                            {{dashboard?.rejected}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="gotoView(getUrl.Contract,contractStatus.All)" class="sm:col-span-1 flex flex-col  bg-color flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">{{'Total Contracts' | translate}}
+                    </div>
+                </div>
+                <div class="flex items-center justify-center mt-1">
+                    <div class="flex flex-col">
+                        <div class="text-5xl font-semibold tracking-tight leading-tight total-customers-color ">
+                            {{dashboard?.total}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sm:col-span-2 md:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+        <div class="flex flex-col sm:flex-row items-start justify-between">
+            <div class="text-lg font-medium tracking-tight leading-6 truncate">{{'Contract Summary' | translate}}</div>
+            <div class="mt-3 sm:mt-0 sm:ml-2">
+                <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{'Years' | translate}}</mat-label>
+                        <mat-select (selectionChange)="contractYearChange()" [(ngModel)]="contractSelectedYear">
+                            <mat-option *ngFor="let year of yearList" [value]="year?.year">
+                                {{year?.year}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-6 w-full mt-8 sm:mt-4">
+            <!-- New vs. Closed -->
+            <div class="flex flex-col flex-auto">
+                <div class="font-medium text-secondary">{{'Pending Contracts vs Settled Contracts' | translate}}</div>
+                <div class="flex flex-col flex-auto">
+                    <apx-chart *ngIf="isGrahpReady" class="flex-auto w-full h-80" [chart]="chart.chart" [colors]="chart.colors" [dataLabels]="chart.dataLabels" [grid]="chart.grid" [labels]="contactGraph?.labels" [legend]="chart.legend" [plotOptions]="chart.plotOptions" [series]="contactGraph?.series"
+                        [states]="chart.states" [stroke]="chart.stroke" [tooltip]="chart.tooltip" [xaxis]="chart.xaxis" [yaxis]="chart.yaxis"></apx-chart>
+                </div>
+            </div>
+            <!-- Overview -->
+            <div class="flex flex-col">
+                <div class="font-medium text-secondary">{{'Overview' | translate}}</div>
+                <div class="flex-auto grid grid-cols-4 gap-4 mt-6">
+                    <!-- New issues -->
+                    <div class="col-span-2 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-green-50 total-merchants-color  dark:bg-white dark:bg-opacity-5 dark:text-indigo-400">
+                        <div class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
+                            {{dashboard?.yearly_pending}}
+                        </div>
+                        <div class="mt-1 text-sm sm:text-lg font-medium">{{'Pending Contracts' | translate}}</div>
+                    </div>
+                    <!-- Closed -->
+                    <div class="col-span-2 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-indigo-50 text-indigo-800  dark:bg-white dark:bg-opacity-5 dark:text-green-500">
+                        <div class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
+                            {{dashboard?.yearly_approved}}
+                        </div>
+                        <div class="mt-1 text-sm sm:text-lg font-medium">{{'Approved Contracts' | translate}}</div>
+                    </div>
+                    <!-- <div
+                        class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                        <div class="text-5xl font-semibold leading-none tracking-tight">
+                            {{data.githubIssues.overview[githubIssuesWeekSelector.value]['fixed']}}
+                        </div>
+                        <div class="mt-1 text-sm font-medium text-center">Fixed</div>
+                    </div>
+                    <div
+                        class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                        <div class="text-5xl font-semibold leading-none tracking-tight">
+                            {{data.githubIssues.overview[githubIssuesWeekSelector.value]['wont-fix']}}
+                        </div>
+                        <div class="mt-1 text-sm font-medium text-center">Won't Fix</div>
+                    </div>
+                    <div
+                        class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                        <div class="text-5xl font-semibold leading-none tracking-tight">
+                            {{data.githubIssues.overview[githubIssuesWeekSelector.value]['re-opened']}}
+                        </div>
+                        <div class="mt-1 text-sm font-medium text-center">Re-opened</div>
+                    </div>
+                    <div
+                        class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                        <div class="text-5xl font-semibold leading-none tracking-tight">
+                            {{data.githubIssues.overview[githubIssuesWeekSelector.value]['needs-triage']}}
+                        </div>
+                        <div class="mt-1 text-sm font-medium text-center">Needs Triage</div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sm:col-span-2 hidden md:block md:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+        <div class="flex flex-col sm:flex-row items-center justify-between">
+            <div class="text-lg font-medium tracking-tight leading-6 truncate">{{'Collection Summary' | translate}}</div>
+            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'Years' | translate}}</mat-label>
+                    <mat-select (selectionChange)="payoutYearChange()" [(ngModel)]="payoutSelectedYear">
+                        <mat-option *ngFor="let year of yearList" [value]="year?.year">
+                            {{year?.year}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="single" [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel">
+        </ngx-charts-bar-vertical>
+    </div>
+</div>

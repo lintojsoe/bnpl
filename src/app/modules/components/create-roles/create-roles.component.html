@@ -1,0 +1,75 @@
+<div class="flex flex-col flex-auto page" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-2xl " [formGroup]="form">
+        <div class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color p-4 pl-6">
+            <mat-icon class="cursor-pointer highlight-text-color" (click)="goBack()" [svgIcon]="translationService.getDirection() =='ltr' ? 'mat_outline:arrow_back' : 'mat_outline:arrow_forward' ">
+            </mat-icon>
+            <span *ngIf="!id">{{'Create Roles & Permissions' | translate}}</span>
+            <span *ngIf="id">{{'Edit Roles & Permissions' | translate}}</span>
+
+        </div>
+        <hr class="border-b m-0 border-color">
+        <div class="flex sm:flex-row flex-col-reverse p-4 gap-4">
+            <div class="flex flex-col gap-y-4" style="flex: 0 0 70%;">
+                <div class="flex flex-col bg-card shadow p-4">
+                    <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                        {{'Permission List' | translate}}
+                    </div>
+                    <hr class="border-b m-0 border-color">
+                    <div class="flex flex-col flex-auto gap-3 py-2">
+                        <div class="flex flex-col flex-auto bg-card w-full p-3 shadow gap-2" *ngFor="let permission of allPermmissionList;let i =index">
+                            <div class="flex-row flex flex-auto justify-between items-center text-lg font-bold tracking-tight highlight-text-color">
+                                <span>{{i+1}} ) {{translationService.getTranslatedField(permission,"model_name")}}</span>
+                                <mat-checkbox (change)="checkForModal($event,i)" [checked]="checkAllChecked(permission?.permissions)" class="mat-primary">All
+                                </mat-checkbox>
+                            </div>
+                            <div class="border-b-secondary-color m-0"></div>
+                            <div class="flex flex-row flex-wrap">
+                                <!--  -->
+                                <div class="flex flex-row items-center justify-start m-2 p-2" *ngFor="let subPermission of permission?.permissions">
+                                    <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="checkedOrUnchecked[subPermission?.id]" (change)="checkBoxChange($event,subPermission?.id)">{{translationService.getTranslatedName(subPermission)}}</mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-auto bg-card shadow p-4">
+                <div class="text-xl font-bold tracking-tight highlight-text-color py-4 ">
+                    {{'Role Detail' | translate}}
+                </div>
+                <hr class="border-b m-0 border-color">
+                <div class="flex flex-col flex-auto gap-1">
+                    <div class="flex flex-col">
+                        <div class="flex-auto grid grid-cols-1 gap-2 mt-6">
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Name (en)' | translate}}
+                                        <span class="required-field">*</span>
+                                    </mat-label>
+                                    <input matInput formControlName="name_en">
+                                    <mat-error *ngIf="form.get('name_en').hasError('required')">
+                                        {{'Name is required' | translate}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-span-3 sm:col-span-1 flex flex-col px-1 ">
+                                <mat-form-field class="example-full-width">
+                                    <mat-label>{{'Name (ar)' | translate}}
+                                    </mat-label>
+                                    <input matInput formControlName="name_ar">
+
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-row flex-initial p-4 justify-end">
+            <button class="mat-focus-indicator  rounded-lg min-h-0 h-9 fuse-mat-button-large primary-bg-color mat-flat-button mat-button-base" mat-flat-button (click)="save()">
+                {{'Submit' | translate}}
+            </button>
+        </div>
+    </div>
+</div>

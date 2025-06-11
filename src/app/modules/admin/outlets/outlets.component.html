@@ -1,0 +1,193 @@
+<div class="flex flex-col flex-auto overflow-hidden page" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-2xl overflow-hidden mb-2">
+        <div class="relative  flex  flex-row flex-0 items-center sm:justify-between py-2 px-2 md:px-4 border-b-2-color">
+            <!-- Loader -->
+            <!-- Title -->
+            <div class="text-2xl flex-auto font-bold tracking-tight highlight-text-color">{{'Merchants' | translate}}
+            </div>
+            <!-- Actions -->
+            <div class="flex flex-initial flex-shrink-0 items-center sm:mt-0 sm:ml-4">
+                <!-- Search -->
+                <!-- <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-50">
+        <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        <input matInput [placeholder]="{{'Search customers' | translate}}"> -->
+                <!-- <input
+            matInput
+            [formControl]="searchInputControl"
+            [autocomplete]="'off'"
+            [placeholder]="'Search products'"> -->
+                <!-- </mat-form-field> -->
+                <!-- Add product button -->
+                <app-common-add-button *ngIf="authUserService.checkPermission(utilitiesService.Permission.CreateMerchant)" (addBtnClick)="addBtnClick()"></app-common-add-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-auto bg-card shadow rounded-t-sm overflow-hidden">
+        <!-- <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden bg-card dark:bg-transparent">
+        </div> -->
+        <!-- Main -->
+        <div class="flex flex-auto overflow-hidden">
+
+            <!-- Products list -->
+            <div class="flex flex-col flex-initial overflow-hidden" [formGroup]="form">
+
+                <!-- <ng-container *ngIf="productsCount > 0; else noProducts"> -->
+
+                <!-- Table wrapper -->
+                <div class="overflow-x-auto sm:overflow-y-auto table-height" [ngClass]="outlets?.length ? 'table-height' : 'h-50' " cdkScrollable>
+
+                    <!-- Table -->
+                    <!-- [ngClass]="{'pointer-events-none': isLoading}" -->
+                    <!-- [matSortActive]="'name'" -->
+                    <!-- [matSortDisableClear]="true" [matSortDirection]="'asc'" -->
+                    <table class="w-full min-w-320 table-fixed bg-transparent" mat-table matSort [multiTemplateDataRows]="true" [dataSource]="outlets" [trackBy]="trackByFn">
+                        <ng-container matColumnDef="outlet_name">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Merchant Name' | translate}}
+                                <div class="flex-auto">
+                                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                                        <input matInput formControlName="name">
+                                    </mat-form-field>
+                                </div>
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let outlet">
+                                {{outlet.name}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Price -->
+                        <ng-container matColumnDef="outlet_address">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Merchant Address' | translate}}
+                                <div class="flex-auto">
+                                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                                        <input matInput formControlName="address">
+                                    </mat-form-field>
+                                </div>
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let outlet">
+                                {{outlet?.address}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Stock -->
+                        <ng-container matColumnDef="outlet_reference">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Merchant Reference' | translate}}
+                                <div class="flex-auto">
+                                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                                        <input matInput formControlName="reference">
+                                    </mat-form-field>
+                                </div>
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let outlet">
+                                {{outlet?.reference}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="logo">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Logo' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let outlet">
+                                <img class="p-2" style="width: auto !important;height: 70px !important;" *ngIf="outlet?.logo" [src]="outlet?.logo">
+                            </td>
+                        </ng-container>
+
+                        <!-- Active -->
+                        <ng-container matColumnDef="action">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5 border-right-radius" style="text-align: end !important;" mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Actions' | translate}}
+                            </th>
+                            <td class="pr-4 action-header" mat-cell *matCellDef="let outlet">
+                                <div class="flex flex-row flex-auto overflow-hidden action-body">
+                                    <div class="flex flex-row action-btn-container" fxFlex="0 0 auto">
+                                        <button (click)="view(outlet?.id)" class="action-btn px-4 flex flex-row flex-auto items-center primary-bg-color" [ngClass]="translationService.getDirection()=='ltr'? 'rounded-l-md' : 'rounded-r-md'" style="width: auto !important;" mat-icon-button fxLayoutGap="1em">
+                                            <mat-icon class="m-1 text-white" svgIcon="mat_outline:remove_red_eye">
+                                            </mat-icon>
+                                            <span class="text-white">{{'View' | translate}}</span>
+                                        </button>
+                                        <button class="action-btn secondary-bg-color" [ngClass]="translationService.getDirection()=='ltr'? 'rounded-r-md' : 'rounded-l-md'" mat-icon-button [matMenuTriggerFor]="userActions">
+                                            <mat-icon svgIcon="mat_outline:keyboard_arrow_down" class="text-white">
+                                            </mat-icon>
+                                        </button>
+                                    </div>
+                                    <mat-menu [xPosition]="'before'" #userActions="matMenu">
+                                        <button *ngIf="authUserService.checkPermission(utilitiesService.Permission.UpdateMerchant)" (click)="edit(outlet?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                                                <strong>{{'Edit' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                        <mat-divider class="my-2"></mat-divider>
+                                        <button *ngIf="outlet?.is_active && authUserService.checkPermission(utilitiesService.Permission.MerchantUserUpdateStatus)" mat-menu-item (click)="disableUser(outlet?.id)">
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:person_off"></mat-icon>
+                                                <strong>{{'Disable' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                        <button *ngIf="!outlet?.is_active && authUserService.checkPermission(utilitiesService.Permission.MerchantUserUpdateStatus)" mat-menu-item (click)="enableUser(outlet?.id)">
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:check"></mat-icon>
+                                                <strong>{{'Enable' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                        <!-- *ngIf="product?.is_active && authUserService.checkPermission(utilitiesService.Permission.MerchantUserUpdateStatus)" -->
+                                        <!-- <button *ngIf="authUserService.checkPermission(utilitiesService.Permission.AssignStaffMerchant)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:send"></mat-icon>
+                                                <strong>{{'Assign Staff' | translate}}</strong>
+                                            </div>
+                                        </button> -->
+                                        <button *ngIf="authUserService.checkPermission(utilitiesService.Permission.PayoutDetail)" mat-menu-item (click)="viewTransactions(outlet?.id)">
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:pageview"></mat-icon>
+                                                <strong>{{'View Payouts' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                    </mat-menu>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <!-- Details -->
+                        <!-- <ng-container matColumnDef="details">
+                        <th class="w-24 pr-8 bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell
+                            *matHeaderCellDef>
+                            Details
+                        </th>
+                        <td class="pr-8" mat-cell *matCellDef="let product">
+                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
+                                (click)="toggleDetails(product.id)">
+                                <mat-icon class="icon-size-5"
+                                    [svgIcon]="selectedProduct?.id === product.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'">
+                                </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container> -->
+
+                        <!-- Product details row -->
+
+
+                        <tr class="shadow" mat-header-row *matHeaderRowDef="productsTableColumns; sticky: true"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell border-b-0">{{'No data found' | translate}}</td>
+                        </tr>
+                        <tr class="h-18 hover:bg-hover" mat-row *matRowDef="let product; columns: productsTableColumns;" [ngClass]="!product?.is_active ? 'disabled-bg-color opacity-50' : ''">
+                        </tr>
+                        <!-- <tr class="h-0" mat-row *matRowDef="let row; columns: ['productDetails']"></tr> -->
+
+                    </table>
+
+                </div>
+
+                <mat-paginator *ngIf="outlets?.length" class="sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent" (page)="handlePageEvent($event)" [length]="page?.length" [pageSize]="page?.pageSize" [showFirstLastButtons]="true"
+                    [pageSizeOptions]="page?.pageSizeOptions" [pageIndex]="page?.pageIndex">
+                </mat-paginator>
+
+            </div>
+        </div>
+    </div>
+</div>

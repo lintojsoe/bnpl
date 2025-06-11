@@ -1,0 +1,183 @@
+<div class="flex flex-col flex-auto overflow-hidden page" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <button class="-ml-1 sm:ml-0 mb-2 sm:mb-0" mat-icon-button (click)="toggleDrawer()">
+        <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+    </button>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-2xl overflow-hidden mb-2">
+        <div class="relative  flex  flex-row flex-0 items-center sm:justify-between py-2 px-2 md:px-4 border-b-2-color">
+            <!-- Loader -->
+            <!-- Title -->
+            <div class="text-2xl flex-auto font-bold tracking-tight highlight-text-color">
+                {{'List of Business Categories' | translate}}
+            </div>
+            <!-- Actions -->
+            <div class="flex flex-initial flex-shrink-0 items-center sm:mt-0 sm:ml-4">
+                <!-- Search -->
+                <!-- <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-50">
+        <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        <input matInput [placeholder]="{{'Search customers' | translate}}"> -->
+                <!-- <input
+            matInput
+            [formControl]="searchInputControl"
+            [autocomplete]="'off'"
+            [placeholder]="'Search products'"> -->
+                <!-- </mat-form-field> -->
+                <!-- Add product button -->
+                <!-- *ngIf="authUserService.checkPermission(utilitiesService.Permission.CreateRole)" -->
+                <app-common-add-button
+                    *ngIf="authUserService.checkPermission(utilitiesService.Permission.CategoryCreate)"
+                    (addBtnClick)="addBtnClick()"></app-common-add-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-auto bg-card shadow rounded-t-sm overflow-hidden">
+        <!-- <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden bg-card dark:bg-transparent">
+        </div> -->
+        <!-- Main -->
+        <div class="flex flex-auto overflow-hidden">
+
+            <!-- Products list -->
+            <div class="flex flex-col flex-initial overflow-hidden" [formGroup]="form">
+
+                <!-- <ng-container *ngIf="productsCount > 0; else noProducts"> -->
+
+                <!-- Table wrapper -->
+                <div class="overflow-x-auto sm:overflow-y-auto table-height"
+                    [ngClass]="categoryList?.length ? 'table-height' : 'h-50' " cdkScrollable>
+
+                    <!-- Table -->
+                    <!-- [ngClass]="{'pointer-events-none': isLoading}" -->
+                    <!-- [matSortActive]="'name'" -->
+                    <!-- [matSortDisableClear]="true" [matSortDirection]="'asc'" -->
+                    <table class="w-full min-w-320 md:min-w-0 table-fixed bg-transparent" mat-table matSort [multiTemplateDataRows]="true"
+                        [dataSource]="categoryList" [trackBy]="trackByFn">
+                        <ng-container matColumnDef="name_en">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Name (en)' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="name_en">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let roles">
+                                {{roles.name_en}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="name_ar">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Name (ar)' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="name_ar">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let roles">
+                                {{roles.name_ar}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="created">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Created Date' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let roles">
+                                {{roles?.created | date: 'dd/MM/yyyy hh:mm'}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="updated">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Updated Date' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let roles">
+                                {{roles?.updated | date: 'dd/MM/yyyy hh:mm'}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th class=" action-header primary-bg-color dark:bg-black dark:bg-opacity-5 border-right-radius"
+                                mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Actions' | translate}}
+                            </th>
+                            <td class="pr-4 action-header" mat-cell *matCellDef="let roles">
+                                <div class="flex flex-row flex-auto overflow-hidden action-body">
+                                    <div class="flex flex-row action-btn-container" fxFlex="0 0 auto">
+                                        <button
+                                            *ngIf="authUserService.checkPermission(utilitiesService.Permission.CategoryUpdate)"
+                                            (click)="edit(roles)"
+                                            class="action-btn px-4 flex flex-row flex-auto items-center primary-bg-color"
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-l-md' : 'rounded-r-md'"
+                                            style="width: auto !important;" mat-icon-button fxLayoutGap="1em">
+                                            <mat-icon class="m-1 text-white" svgIcon="mat_outline:edit">
+                                            </mat-icon>
+                                            <span class="text-white">{{'Edit' | translate}}</span>
+                                        </button>
+                                        <button
+                                            *ngIf="!authUserService.checkPermission(utilitiesService.Permission.CategoryUpdate)&&authUserService.checkPermission(utilitiesService.Permission.CategoryDelete)"
+                                            (click)="deleteCategory(roles?.id)"
+                                            class="action-btn px-4 flex flex-row flex-auto items-center primary-bg-color"
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-l-md' : 'rounded-r-md'"
+                                            style="width: auto !important;" mat-icon-button fxLayoutGap="1em">
+                                            <mat-icon class="m-1 text-white" svgIcon="mat_outline:delete">
+                                            </mat-icon>
+                                            <span class="text-white">{{'Delete' | translate}}</span>
+                                        </button>
+                                        <button
+                                            *ngIf="authUserService.checkPermission(utilitiesService.Permission.CategoryUpdate) || authUserService.checkPermission(utilitiesService.Permission.CategoryDelete)"
+                                            class="action-btn secondary-bg-color"
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-r-md' : 'rounded-l-md'"
+                                            mat-icon-button [matMenuTriggerFor]="userActions">
+                                            <mat-icon svgIcon="mat_outline:keyboard_arrow_down" class="text-white">
+                                            </mat-icon>
+                                        </button>
+                                    </div>
+                                    <mat-menu [xPosition]="'before'" #userActions="matMenu">
+                                        <button
+                                            *ngIf="authUserService.checkPermission(utilitiesService.Permission.CategoryUpdate)&&authUserService.checkPermission(utilitiesService.Permission.CategoryDelete)"
+                                            (click)="deleteCategory(roles?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon class="action-btn-delete" svgIcon="mat_outline:delete">
+                                                </mat-icon>
+                                                <strong class="action-btn-delete">{{'Delete' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                        <mat-divider class="my-2"></mat-divider>
+                                    </mat-menu>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr class="shadow" mat-header-row *matHeaderRowDef="productsTableColumns; sticky: true"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell border-b-0">{{'No data found' | translate}}</td>
+                        </tr>
+                        <tr class="h-18 hover:bg-hover" mat-row *matRowDef="let roles; columns: productsTableColumns;">
+                        </tr>
+                    </table>
+                </div>
+                <mat-paginator *ngIf="categoryList?.length"
+                    class="sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                    (page)="handlePageEvent($event)" [length]="page?.length" [pageSize]="page?.pageSize"
+                    [showFirstLastButtons]="true" [pageSizeOptions]="page?.pageSizeOptions"
+                    [pageIndex]="page?.pageIndex">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

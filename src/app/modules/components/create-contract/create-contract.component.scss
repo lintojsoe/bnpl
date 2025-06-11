@@ -1,0 +1,89 @@
+@import "styles/mixins";
+
+:host {
+    .stepper-btn {
+        border-radius: 7px;
+        height: 35px;
+        min-height: 0;
+        border: 2px solid #ccc;
+    }
+
+    .custom-width {
+        @include mobile() {
+            width: calc(100% - 1.5rem) !important
+        }
+
+    }
+
+    .search-button {
+        margin-top: -9px !important;
+    }
+
+    .error-installment {
+        ::ng-deep .mat-form-field-flex {
+            border-color: red !important;
+        }
+    }
+
+    .error-feild {
+        ::ng-deep .mat-form-field-flex {
+            border-color: red !important;
+        }
+    }
+
+    hr {
+        width: 100%;
+    }
+
+    td {
+        padding: 4px !important;
+    }
+
+    th {
+        padding: 4px !important;
+        text-align: start !important;
+        height: 45px;
+    }
+
+    .active-hr {
+        border-color: #00C7B6 !important;
+    }
+
+    .active-btn {
+        border-color: #00C7B6 !important;
+    }
+
+    .attachment {
+        background: #2e5ea8;
+        height: 48px;
+        color: white;
+        border-radius: 6px;
+    }
+
+    .discount-btn {
+        ::ng-deep .mat-form-field-flex {
+            min-height: 0 !important;
+            height: 30px !important;
+        }
+    }
+
+    .vertical-line {
+        border-left: 2px solid #ccc;
+        position: relative;
+        height: 60px;
+    }
+
+    .animate-spin-veryslow {
+        animation: spin 9s linear infinite !important
+    }
+
+    .disabled {
+        pointer-events: none !important;
+    }
+
+    .validation-error {
+        ::ng-deep .ng-select-container {
+            border-color: red !important;
+        }
+    }
+}

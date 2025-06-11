@@ -1,0 +1,12 @@
+:host {
+    #reports-block:hover {
+        box-shadow: 0 0 11px rgb(33 33 33 / 20%) !important;
+        transition: box-shadow 0.3s ease-in-out;
+        background-color: #2e5ea8 !important;
+        color: white;
+
+        mat-icon {
+            color: white !important;
+        }
+    }
+}

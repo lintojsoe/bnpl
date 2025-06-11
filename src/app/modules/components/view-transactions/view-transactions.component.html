@@ -1,0 +1,251 @@
+<div class="flex flex-col flex-auto overflow-hidden page gap-y-2" *ngIf="!isTransfer" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-2xl">
+        <div class="flex flex-row flex-initial items-center justify-between p-4">
+            <div
+                class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color px-4">
+                <span>{{merchantInfo?.name}}</span>
+            </div>
+            <div *ngIf="merchantInfo?.logo"
+                class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color px-4">
+                <img class="w-14 h-16 rounded max-h-18 rounded" style="object-fit: contain !important;"
+                    [src]="merchantInfo?.logo">
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-sm overflow-hidden">
+        <div
+            class="relative  flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-2 px-2 md:px-4 border-b-2-color">
+            <div
+                class="text-2xl flex flex-row items-center flex-auto gap-x-2 font-bold tracking-tight highlight-text-color">
+                <mat-icon class="cursor-pointer highlight-text-color" (click)="goBack()"
+                    [svgIcon]="translationService.getDirection() =='ltr' ? 'mat_outline:arrow_back' : 'mat_outline:arrow_forward' ">
+                </mat-icon>
+                <span>{{'View Payouts' | translate}}</span>
+            </div>
+            <div class="flex flex-row flex-initial gap-x-3">
+                <button class="fuse-mat-button highlight-text-color status-btn"
+                    [ngClass]="isPaid ? 'active-btn rounded-bl-xl rounded-br-xl' : '' " (click)="toggleStatus(true)"
+                    mat-flat-button>
+                    {{'Paid' | translate}}
+                </button>
+                <button class="fuse-mat-button highlight-text-color status-btn"
+                    [ngClass]="!isPaid ? 'active-btn rounded-bl-xl rounded-br-xl' : '' " (click)="toggleStatus(false)"
+                    mat-flat-button>
+                    {{'Unpaid' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-auto bg-card shadow rounded-t-sm overflow-hidden" [formGroup]="form">
+        <div class="flex flex-auto overflow-hidden">
+            <div class="flex flex-col flex-initial overflow-hidden">
+                <div class="overflow-x-auto sm:overflow-y-auto " [ngClass]="contracts?.length ? 'h-100' : 'h-50' "
+                    cdkScrollable>
+                    <table class="w-full min-w-320 table-fixed bg-transparent cursor-pointer" mat-table matSort
+                        [multiTemplateDataRows]="true" [dataSource]="contracts" [trackBy]="trackByFn">
+
+                        <!-- SKU -->
+                        <ng-container matColumnDef="contract_no">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5 border-left-radius"
+                                mat-header-cell *matHeaderCellDef>
+
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Payout Reference' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="reference">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let contract">
+                                {{contract?.reference}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Name -->
+                        <ng-container matColumnDef="payout_id">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Payout ID' | translate}}
+                                    </div>
+                                    <!-- <div class="flex-auto">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="name">
+                                        </mat-form-field>
+                                    </div> -->
+                                </div>
+
+
+                            </th>
+                            <td class="pr-8 truncate" mat-cell *matCellDef="let contract">
+                                {{contract?.id}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="amount">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Amount' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                {{contract?.amount}}
+                            </td>
+                        </ng-container>
+                        <!-- <ng-container matColumnDef="contract_status">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                <div class="flex flex-col flex-auto">
+                                    <div>
+                                        {{'Contract Status' | translate}}
+                                    </div>
+                                    <div class="flex-auto">
+                                        <mat-form-field appearance="outline" class="flex-auto gt-xs:pr-3 filter-box">
+                                            <mat-select formControlName="contract_status">
+                                                <mat-option value="">{{'All' | translate}} </mat-option>
+                                                <mat-option [value]="status?.id"
+                                                    *ngFor="let status of contractEnum?.ContractStatuses">
+                                                    {{status?.name}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                {{contract?.contract_status?.name}}
+                            </td>
+                        </ng-container> -->
+                        <ng-container matColumnDef="transaction_date">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Transaction Date' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                {{contract?.transaction_date | date:'dd/MM/yyyy'}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="create_date">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5" mat-header-cell
+                                *matHeaderCellDef disableClear>
+                                {{'Created Date' | translate}}
+                            </th>
+                            <td class="pr-4" mat-cell *matCellDef="let contract">
+                                {{contract?.created | date:'dd/MM/yyyy'}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Active -->
+                        <ng-container matColumnDef="action">
+                            <th class="primary-bg-color dark:bg-black dark:bg-opacity-5 border-right-radius"
+                                mat-header-cell *matHeaderCellDef disableClear>
+                                {{'Actions' | translate}}
+                            </th>
+                            <td class="pr-4 p-0" mat-cell *matCellDef="let contract">
+                                <div class="flex flex-row flex-auto overflow-hidden">
+                                    <div class="flex flex-row action-btn-container" fxFlex="0 0 auto">
+                                        <button (click)="viewPayouts(contract?.id)"
+                                            class="action-btn px-4 flex flex-row flex-auto items-center primary-bg-color"
+                                            [ngClass]="translationService.getDirection()=='ltr'? 'rounded-md' : 'rounded-md'"
+                                            style="width: auto !important;" mat-icon-button fxLayoutGap="1em">
+                                            <mat-icon class="m-1 text-white" svgIcon="mat_outline:edit">
+                                            </mat-icon>
+                                            <span class="text-white">{{'Update' | translate}}</span>
+                                        </button>
+                                        <!-- <button class="action-btn secondary-bg-color " mat-icon-button [ngClass]="translationService.getDirection()=='ltr'? 'rounded-r-md' : 'rounded-l-md'" [matMenuTriggerFor]="userActions">
+                                            <mat-icon svgIcon="mat_outline:keyboard_arrow_down" class="text-white">
+                                            </mat-icon>
+                                        </button> -->
+                                    </div>
+                                    <!-- <mat-menu [xPosition]="'before'" #userActions="matMenu">
+                                        <button *ngIf="contract?.contract_status?.id=='1'" (click)="edit(contract?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                                                <strong>{{'Edit' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                        <mat-divider class="my-2"></mat-divider>
+                                        <button (click)="sendNotification(contract?.id)" mat-menu-item>
+                                            <div class="flex flex-row flex-initial gap-x-2 items-center">
+                                                <mat-icon svgIcon="mat_outline:notifications"></mat-icon>
+                                                <strong>{{'Send Reminder' | translate}}</strong>
+                                            </div>
+                                        </button>
+                                    </mat-menu> -->
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr class="shadow" mat-header-row *matHeaderRowDef="getColumns(); sticky: true"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <!-- colspan="6" -->
+                            <td class="mat-cell border-b-0">{{'No data found' | translate}}</td>
+                        </tr>
+                        <tr class="h-18 hover:bg-hover" mat-row *matRowDef="let row; columns: getColumns()">
+                        </tr>
+                        <!-- [ngClass]="{highlighted: selection.isSelected(row)}" (click)="selectRow($event,row)" -->
+                    </table>
+                </div>
+                <mat-paginator *ngIf="contracts?.length"
+                    class="sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                    (page)="handlePageEvent($event)" [length]="page?.length" [pageSize]="page?.pageSize"
+                    [showFirstLastButtons]="true" [pageSizeOptions]="page?.pageSizeOptions"
+                    [pageIndex]="page?.pageIndex">
+                </mat-paginator>
+                <ng-template #noProducts>
+                    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+                        {{'Nothing to Display' | translate}}</div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <!-- <div *ngIf="!isPaid"
+        class="flex flex-col md:flex-row gap-x-4 gap-y-4 flex-auto bg-card shadow rounded-t-sm overflow-hidden p-4 items-start justify-between">
+        <div class="flex flex-row flex-initial">
+            <button *ngIf="!selection.hasValue()" [disabled]="!contracts?.length"
+                class="fuse-mat-button  btn-selectall primary-bg-color" (click)="selectAll()" mat-flat-button>
+                {{'Select All' | translate}}
+            </button>
+            <button *ngIf="selection.hasValue()" [disabled]="!contracts?.length"
+                class="fuse-mat-button  btn-selectall primary-bg-color" (click)="unSelect()" mat-flat-button>
+                {{'UnSelect All' | translate}}
+            </button>
+        </div>
+        <div class="flex flex-row flex-initial gap-x-4">
+            <button class="fuse-mat-button  btn-selectall font-bold" mat-flat-button>
+                <span class="px-1">{{'Total Amount:' | translate}}</span>
+                <span> {{totalAmount}} </span>
+                <span class="px-2"> KWD</span>
+
+            </button>
+            <button [disabled]="!selection.hasValue()" class="fuse-mat-button  btn-selectall primary-bg-color"
+                (click)="transfer()" mat-flat-button>
+                {{'Transfer' | translate}}
+            </button>
+        </div>
+    </div> -->
+</div>
+
+<div class="flex flex-col flex-auto  overflow-hidden page " *ngIf="isTransfer" @slideInLeft>
+    <app-breadcrumb [breadcrumbs]="breadcrumbs"></app-breadcrumb>
+    <div class="flex flex-col flex-initial bg-card shadow rounded-t-2xl mb-2">
+        <div class="flex flex-row flex-initial items-center justify-between">
+            <div
+                class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color p-4 pl-6">
+                <span>{{merchantInfo?.name}}</span>
+            </div>
+            <div *ngIf="merchantInfo?.logo"
+                class="text-2xl flex flex-row flex-initial gap-x-2 items-center font-bold tracking-tight highlight-text-color p-4 pl-6">
+                <img class="w-14 h-16 rounded max-h-18 rounded" style="object-fit: contain !important;"
+                    [src]="merchantInfo?.logo">
+            </div>
+        </div>
+    </div>
+    <app-transfer [contractIDs]="contractIDs" [merchantDetails]="merchantDetails" (goBackHandle)="toggleTransfer($event)">
+    </app-transfer>
+</div>

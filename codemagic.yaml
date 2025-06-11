@@ -1,0 +1,67 @@
+# Check out https://docs.codemagic.io/getting-started/building-an-ionic-app/ for more information
+# Please review and update values in curly braces
+# Remove or comment out the workflows you don't require
+
+workflows:
+    # Web Staging
+    web-staging:
+        name: Web Staging
+        environment:
+            vars:
+                DISTRIBUTION_ID: Encrypted(Z0FBQUFBQmd6Y3ZnZVhUWjhhYnM0anpKTnFNU1R0cTZUZGNqUkRYS3lmRVgyMnljaVFUQ2REX2xoN01Bc3ZiQ2UzZDNCWEtqcDFmOHBOcGJDQkN0NS1nZ3E3Z2hLVG5UMHc9PQ==)
+                AWS_ACCESS_KEY_ID: Encrypted(Z0FBQUFBQmdzNEZqWkx3ajB0LUxIZENtNVFlNENaVnJvVnpTU1d5cjlNbXlBRjVNYUdBUGpITWcwOXFRT1ByaVFfSGkyY1N2Z3pDRWxaUnZVQTVCTGhIYUNpZnNPTTlUaTdSalJoam1SZGw0czN0TmJIcmNPT0E9)
+                AWS_SECRET_ACCESS_KEY: Encrypted(Z0FBQUFBQmdzNEg1SUNrQnRDMzFhX2pLSlJ2el9PVnoxWnpfU0FmVHhLaXhsdm5JVk9PSm8xZVlXYU5JT1hZdFllazBSSHlPa2Yzckw5X3FQb3llU2syMUQ1aHZfOWNwY2JicEhhVXJIdnhCdTk0X2duYi1KRVF0aUt2aHZqRDhkVzFiWGNmS1ZHOHE=)
+            node: latest
+        scripts:
+            - name: Install npm dependencies for Angular project
+              script: |
+                  npm install --force
+            - name: Install Angular CLI
+              script: |
+                  npm install -g @angular/cli
+            - name: Generate Dist folder
+              script: |
+                  ng build --prod
+            - name: Upload to s3
+              script: |
+                  cd $FCI_BUILD_DIR
+                  sudo pip3 install awscli --upgrade
+                  aws s3 sync dist/ s3://bnpl-portal.paydostg.xyz/
+                  aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'
+            - name: zip files
+              script: |
+                  cd $FCI_BUILD_DIR/dist
+                  7z a -r ./staging.zip ./*
+        artifacts:
+            - dist/staging.zip
+
+    alt-web-production:
+        name: Web Production
+        environment:
+            vars:
+                DISTRIBUTION_ID: Encrypted(Z0FBQUFBQmd6Y3ZnZVhUWjhhYnM0anpKTnFNU1R0cTZUZGNqUkRYS3lmRVgyMnljaVFUQ2REX2xoN01Bc3ZiQ2UzZDNCWEtqcDFmOHBOcGJDQkN0NS1nZ3E3Z2hLVG5UMHc9PQ==)
+                AWS_ACCESS_KEY_ID: Encrypted(Z0FBQUFBQmdzNEZqWkx3ajB0LUxIZENtNVFlNENaVnJvVnpTU1d5cjlNbXlBRjVNYUdBUGpITWcwOXFRT1ByaVFfSGkyY1N2Z3pDRWxaUnZVQTVCTGhIYUNpZnNPTTlUaTdSalJoam1SZGw0czN0TmJIcmNPT0E9)
+                AWS_SECRET_ACCESS_KEY: Encrypted(Z0FBQUFBQmdzNEg1SUNrQnRDMzFhX2pLSlJ2el9PVnoxWnpfU0FmVHhLaXhsdm5JVk9PSm8xZVlXYU5JT1hZdFllazBSSHlPa2Yzckw5X3FQb3llU2syMUQ1aHZfOWNwY2JicEhhVXJIdnhCdTk0X2duYi1KRVF0aUt2aHZqRDhkVzFiWGNmS1ZHOHE=)
+            node: latest
+        scripts:
+            - name: Install npm dependencies for Angular project
+              script: |
+                  npm install --force
+            - name: Install Angular CLI
+              script: |
+                  npm install -g @angular/cli
+            - name: Generate Dist folder
+              script: |
+                  ng build --prod
+            - name: Upload to s3
+              script: |
+                  cd $FCI_BUILD_DIR
+                  sudo pip3 install awscli --upgrade
+                  aws s3 sync dist/ 
+                  aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'
+            - name: zip files
+              script: |
+                  cd $FCI_BUILD_DIR/dist
+                  7z a -r ./staging.zip ./*
+        artifacts:
+            - dist/staging.zip
