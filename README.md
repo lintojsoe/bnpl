@@ -33,8 +33,8 @@ This is an enterprise-grade web application built using the [Fuse Angular Admin 
 ### Installation
 
 ```bash
-git clone https://github.com/your-org/bnpl-angular.git
-cd bnpl-angular
+git clone https://github.com/your-org/bnpl.git
+cd bnpl
 npm install
 
 
